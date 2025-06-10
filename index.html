@@ -1132,7 +1132,9 @@
                         "></textarea>
 
                         <input type="hidden" id="configData" value='${JSON.stringify(configSummary)}'>
-                        <input type="hidden" id="totalPrice" value="${totalIncGST}">
+                        <input type="hidden" id="totalPriceValue" value="${totalIncGST}">
+                        <input type="hidden" id="subtotalValue" value="${total}">
+                        <input type="hidden" id="gstValue" value="${gst}">
                         
                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                             <button type="button" onclick="closeContactForm(); return false;" style="
