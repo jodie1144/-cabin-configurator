@@ -6,14 +6,10 @@
     <title>Freedom Cabins NZ - Custom Configurator</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #474d60 0%, #3a3f50 50%, #2e3240 100%);
             min-height: 100vh;
             color: #c2c4ca;
@@ -74,11 +70,6 @@
             padding: 2rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         }
         
         .section-title {
@@ -234,14 +225,6 @@
             overflow: hidden;
         }
         
-        .cabin-preview::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none"><rect x="10" y="30" width="80" height="50" stroke="%23da8a67" stroke-width="2" fill="rgba(218,138,103,0.1)"/><polygon points="10,30 50,10 90,30" stroke="%23da8a67" stroke-width="2" fill="rgba(218,138,103,0.1)"/><rect x="20" y="40" width="15" height="20" stroke="%23da8a67" stroke-width="1" fill="rgba(218,138,103,0.05)"/><rect x="65" y="40" width="15" height="20" stroke="%23da8a67" stroke-width="1" fill="rgba(218,138,103,0.05)"/></svg>') center/contain no-repeat;
-            opacity: 0.6;
-        }
-        
         .preview-text {
             color: #9ca3af;
             text-align: center;
@@ -305,64 +288,6 @@
             color: #c2c4ca;
         }
         
-        .upgrade-section {
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(194, 196, 202, 0.1);
-        }
-        
-        .upgrade-section:last-child {
-            border-bottom: none;
-        }
-        
-        .upgrade-details {
-            margin-top: 1rem;
-        }
-        
-        .upgrade-option {
-            transition: all 0.3s ease;
-            display: none;
-        }
-        
-        .upgrade-option.active {
-            display: block;
-        }
-        
-        .upgrade-preview {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(58, 63, 80, 0.3);
-            border-radius: 8px;
-            border: 1px solid rgba(194, 196, 202, 0.1);
-        }
-        
-        .upgrade-img {
-            width: 150px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid rgba(218, 138, 103, 0.3);
-        }
-        
-        .upgrade-info {
-            flex: 1;
-        }
-        
-        .upgrade-info h4 {
-            color: #da8a67;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        
-        .upgrade-info p {
-            color: #9ca3af;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            margin: 0;
-        }
-        
         @media (max-width: 1024px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -387,26 +312,6 @@
             .card {
                 padding: 1.5rem;
             }
-            
-            .upgrade-preview {
-                flex-direction: column;
-            }
-            
-            .upgrade-img {
-                width: 100%;
-                height: 120px;
-            }
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
         }
     </style>
 </head>
@@ -430,4 +335,65 @@
                         <select class="form-select" id="cabinModel">
                             <option value="">Choose a cabin model...</option>
                             <option value="8.4x3-1bed">8.4m x 3m - 1 Bedroom ($67,900)</option>
-                            <option value
+                            <option value="10x3-1bed">10m x 3m - 1 Bedroom ($81,900)</option>
+                            <option value="10x3-1bed-ensuite">10m x 3m - 1 Bedroom En Suite ($82,900)</option>
+                            <option value="10x3-2bed">10m x 3m - 2 Bedroom ($86,900)</option>
+                            <option value="10.8x3-1bed">10.8m x 3m - 1 Bedroom ($97,900)</option>
+                            <option value="10.8x3-2bed">10.8m x 3m - 2 Bedroom ($98,900)</option>
+                            <option value="12x4-2bed">12m x 4m - 2 Bedroom ($125,900)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Build Type</label>
+                        <select class="form-select" id="buildCategory">
+                            <option value="standard">Standard Build</option>
+                            <option value="double-glazed">Double Glazed Joinery Upgrade (+$8,000)</option>
+                            <option value="built-to-code">Built to Code (+$15,000)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="cabinSpecs" class="cabin-spec">
+                        <div class="spec-title">Choose Your Cabin</div>
+                        <div class="spec-details">
+                            <strong>Step 1:</strong> Select your cabin model above<br>
+                            <strong>Step 2:</strong> Choose your build type<br>
+                            <strong>Step 3:</strong> Customize your upgrades
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features & Upgrades -->
+                <div class="card">
+                    <h2 class="section-title">⚡ Features & Upgrades</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🚿 Bathroom Package</label>
+                        <select class="form-select" id="bathroomPackage">
+                            <option value="standard">Standard Bathroom (Free)</option>
+                            <option value="deluxe">Deluxe Bathroom (+$3,500)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🍳 Kitchen Package</label>
+                        <select class="form-select" id="kitchenPackage">
+                            <option value="standard">Standard Kitchen (Free)</option>
+                            <option value="deluxe">Deluxe Kitchen (+$4,200)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🌲 Cedar Panel Cladding</label>
+                        <select class="form-select" id="cedarPanels">
+                            <option value="none">No Cedar Panels (Free)</option>
+                            <option value="partial">Partial Cedar Panels (+$3,800)</option>
+                            <option value="full">Full Cedar Cladding (+$7,500)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🗄️ Storage Cupboards</label>
+                        <select class="form-select" id="cupboards">
+                            <option value="standard">Standard Cupboards</option>
+                            <option value="premium">Premium
