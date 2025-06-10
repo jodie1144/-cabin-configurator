@@ -657,6 +657,9 @@
     </div>
 
     <script>
+        // Import Wix Data API for database operations
+        import wixData from 'wix-data';
+
         // Configuration data
         const cabinData = {
             '12x4-two-bedroom': { name: '12m x 4m Two Bedroom', price: 125900 },
@@ -1096,36 +1099,128 @@
             const configData = JSON.parse(document.getElementById('configData').value);
             const totalPrice = document.getElementById('totalPrice').value;
 
-            // OPTION 1: Simple mailto (works immediately)
-            const emailSubject = `Cabin Estimate Request - ${configData.cabin}`;
-            const emailBody = `
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
+            // Prepare data for Wix database
+            const estimateData = {
+                customerName: name,
+                customerEmail: email,
+                customerPhone: phone,
+                customerMessage: message,
+                cabinModel: configData.cabin,
+                buildType: configData.buildType,
+                bathroomPackage: configData.bathroom,
+                kitchenPackage: configData.kitchen,
+                doorType: configData.doorType,
+                doorQuantity: configData.doorQuantity,
+                cedarQuantity: configData.cedarQuantity,
+                trailerOption: configData.trailer,
+                heatPumpOption: configData.heatPump,
+                totalPrice: parseInt(totalPrice),
+                submittedDate: new Date(),
+                status: 'new'
+            };
 
-Configuration:
-- Cabin: ${configData.cabin}
-- Build Type: ${configData.buildType}
-- Bathroom: ${configData.bathroom}
-- Kitchen: ${configData.kitchen}
-- Door Type: ${configData.doorType} (Quantity: ${configData.doorQuantity})
-- Cedar Panels: ${configData.cedarQuantity}
-- Trailer: ${configData.trailer}
-- Heat Pump: ${configData.heatPump}
+            // Save to Wix database
+            wixData.insert("CabinEstimates", estimateData)
+                .then((result) => {
+                    showSuccessMessage(estimateData, result._id);
+                    closeContactForm();
+                })
+                .catch((error) => {
+                    console.error('Error saving estimate:', error);
+                    alert('Sorry, there was an error submitting your request. Please try again or contact us directly.');
+                });
+        }
 
-Total Estimate: ${parseInt(totalPrice).toLocaleString()} inc GST
+        function showSuccessMessage(estimateData, estimateId) {
+            // Create and show success message
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1001;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            `;
 
-Message: ${message}
-            `.trim();
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 12px;
+                    padding: 2rem;
+                    max-width: 500px;
+                    width: 100%;
+                    text-align: center;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                ">
+                    <div style="
+                        width: 60px;
+                        height: 60px;
+                        background: #DA8A67;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 1rem;
+                        color: white;
+                        font-size: 24px;
+                    ">✓</div>
+                    
+                    <h2 style="color: #DA8A67; margin-bottom: 1rem;">
+                        Estimate Request Submitted!
+                    </h2>
+                    
+                    <p style="color: #64748b; margin-bottom: 1rem; line-height: 1.6;">
+                        Thank you ${estimateData.customerName}! We've received your request for a 
+                        <strong>${estimateData.cabinModel}</strong> cabin.
+                    </p>
+                    
+                    <div style="
+                        background: #fef7f0;
+                        padding: 1rem;
+                        border-radius: 8px;
+                        margin-bottom: 1.5rem;
+                        text-align: left;
+                    ">
+                        <p style="color: #DA8A67; font-weight: 600; margin-bottom: 0.5rem;">
+                            Reference: ${estimateId}
+                        </p>
+                        <p style="color: #64748b; font-size: 0.9rem;">
+                            Estimated Total: $${estimateData.totalPrice.toLocaleString()} inc GST
+                        </p>
+                    </div>
+                    
+                    <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                        We'll contact you within 24 hours with your detailed estimate 
+                        and answer any questions you have.
+                    </p>
+                    
+                    <button onclick="closeSuccessMessage()" style="
+                        background: linear-gradient(135deg, #DA8A67 0%, #c77a57 100%);
+                        color: white;
+                        border: none;
+                        padding: 1rem 2rem;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    ">Continue</button>
+                </div>
+            `;
 
-            // Open email client
-            window.location.href = `mailto:info@freedomcabinsnz.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            document.body.appendChild(modal);
+        }
 
-            // Show success message
-            alert('✅ Estimate request prepared!\n\nYour email client should open with the estimate details ready to send.');
-            
-            closeContactForm();
-            showTestSuccess();
+        function closeSuccessMessage() {
+            const modal = document.querySelector('div[style*="z-index: 1001"]');
+            if (modal) {
+                modal.remove();
+            }
         }
 
         function showTestSuccess() {
