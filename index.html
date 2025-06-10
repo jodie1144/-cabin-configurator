@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Freedom Cabins NZ - Custom Configurator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
         
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #474d60 0%, #3a3f50 50%, #2e3240 100%);
-            min-height: 100vh;
-            color: #c2c4ca;
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
         }
         
         .header {
-            background: rgba(71, 77, 96, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(194, 196, 202, 0.1);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 40;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .header-content {
@@ -35,19 +36,17 @@
         }
         
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #da8a67;
+            font-size: 1.75rem;
+            font-weight: 700;
         }
         
         .live-price {
-            background: linear-gradient(135deg, #da8a67, #c77a57);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             padding: 0.75rem 1.5rem;
             border-radius: 50px;
             font-weight: 600;
             font-size: 1.1rem;
-            color: white;
-            box-shadow: 0 4px 15px rgba(218, 138, 103, 0.3);
         }
         
         .container {
@@ -56,299 +55,290 @@
             padding: 2rem 1rem;
         }
         
-        .grid {
+        .layout {
             display: grid;
+            grid-template-columns: 1fr 350px;
             gap: 2rem;
-            grid-template-columns: 1fr 400px;
         }
         
-        .card {
-            background: rgba(71, 77, 96, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(194, 196, 202, 0.1);
-            border-radius: 16px;
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
         
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #c2c4ca;
-            margin-bottom: 1.5rem;
+        .step-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: linear-gradient(135deg, #da8a67, #c77a57);
-            border-radius: 2px;
-        }
-        
-        .form-group {
+            gap: 1rem;
             margin-bottom: 1.5rem;
         }
         
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #c2c4ca;
+        .step-number {
+            background: #3b82f6;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
         
-        .form-select, .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(58, 63, 80, 0.8);
-            border: 1px solid rgba(194, 196, 202, 0.2);
-            border-radius: 8px;
-            color: #c2c4ca;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            font-family: 'Montserrat', sans-serif;
-        }
-        
-        .form-select:focus, .form-input:focus {
-            outline: none;
-            border-color: #da8a67;
-            box-shadow: 0 0 0 3px rgba(218, 138, 103, 0.1);
-            background: rgba(58, 63, 80, 1);
-        }
-        
-        .form-select option {
-            background: #474d60;
-            color: #c2c4ca;
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
         }
         
         .cabin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1rem;
-            margin-bottom: 2rem;
         }
         
-        .cabin-option {
-            background: rgba(58, 63, 80, 0.4);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            padding: 1.5rem;
+        .cabin-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
+            transition: all 0.2s ease;
+            background: white;
         }
         
-        .cabin-option:hover {
-            border-color: #da8a67;
+        .cabin-card:hover {
+            border-color: #3b82f6;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
         }
         
-        .cabin-option.selected {
-            border-color: #da8a67;
-            background: rgba(218, 138, 103, 0.1);
+        .cabin-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
         
         .cabin-floorplan {
             width: 100%;
-            height: 140px;
-            background: #666;
-            border-radius: 8px;
+            height: 120px;
+            background: #f1f5f9;
+            border-radius: 6px;
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #64748b;
             font-size: 0.9rem;
-            text-align: center;
-            background-image: url('/api/placeholder/300/140');
-            background-size: cover;
-            background-position: center;
+            border: 1px dashed #cbd5e1;
         }
         
-        .cabin-header {
+        .cabin-info {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
         
         .cabin-name {
             font-weight: 600;
-            color: #da8a67;
-            font-size: 1.1rem;
+            color: #1e293b;
         }
         
         .cabin-price {
             font-weight: 600;
-            color: #c2c4ca;
-            font-size: 1rem;
+            color: #3b82f6;
         }
         
         .cabin-specs {
-            font-size: 0.9rem;
-            color: #9ca3af;
-            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
         }
         
         .cabin-description {
-            font-size: 0.85rem;
-            color: #9ca3af;
-            line-height: 1.3;
+            font-size: 0.8rem;
+            color: #64748b;
         }
         
-        .build-type-buttons {
+        .build-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
         }
         
-        .build-type-btn {
-            background: rgba(58, 63, 80, 0.4);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            padding: 1.5rem 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .build-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
             text-align: center;
-            color: #c2c4ca;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
         }
         
-        .build-type-btn:hover {
-            border-color: #da8a67;
-            background: rgba(58, 63, 80, 0.6);
+        .build-option:hover {
+            border-color: #3b82f6;
         }
         
-        .build-type-btn.selected {
-            border-color: #da8a67;
-            background: rgba(218, 138, 103, 0.1);
+        .build-option.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
         
-        .build-type-icon {
+        .build-icon {
             font-size: 2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
         
-        .build-type-name {
+        .build-name {
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
         }
         
-        .build-type-price {
-            font-size: 0.9rem;
-            color: #da8a67;
+        .build-price {
+            color: #3b82f6;
             font-weight: 500;
+            font-size: 0.9rem;
         }
         
-        .package-comparison {
+        .package-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .package-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .package-preview {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-bottom: 1rem;
         }
         
-        .package-option {
-            background: rgba(58, 63, 80, 0.4);
-            border: 2px solid transparent;
-            border-radius: 8px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .package-option:hover {
-            border-color: #da8a67;
-        }
-        
-        .package-option.selected {
-            border-color: #da8a67;
-            background: rgba(218, 138, 103, 0.1);
-        }
-        
-        .package-image {
+        .preview-image {
             height: 100px;
-            background: #666;
+            background: #e2e8f0;
             border-radius: 6px;
-            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #64748b;
             font-size: 0.8rem;
             text-align: center;
         }
         
-        .package-name {
-            font-weight: 600;
-            color: #c2c4ca;
-            margin-bottom: 0.25rem;
+        .form-group {
+            margin-bottom: 1rem;
         }
         
-        .package-price {
-            color: #da8a67;
+        .form-label {
+            display: block;
             font-weight: 500;
-            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #374151;
         }
         
-        .quantity-selector {
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            color: #1e293b;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        
+        .quantity-control {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            margin-top: 0.5rem;
         }
         
         .quantity-btn {
-            background: #da8a67;
+            background: #3b82f6;
             color: white;
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #2563eb;
+        }
+        
+        .quantity-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
         }
         
         .quantity-display {
             min-width: 40px;
             text-align: center;
             font-weight: 600;
+            font-size: 1.1rem;
         }
         
         .sidebar {
             position: sticky;
-            top: 6rem;
+            top: 2rem;
             height: fit-content;
         }
         
-        .quote-card {
-            background: linear-gradient(135deg, rgba(218, 138, 103, 0.1), rgba(199, 122, 87, 0.1));
-            border: 1px solid rgba(218, 138, 103, 0.3);
+        .estimate-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
         
-        .price-display {
+        .estimate-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            text-align: center;
+        }
+        
+        .total-price {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #da8a67;
+            color: #3b82f6;
             text-align: center;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 10px rgba(218, 138, 103, 0.3);
+            margin-bottom: 1.5rem;
         }
         
         .price-breakdown {
-            margin-bottom: 1rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .price-item {
@@ -356,39 +346,42 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(194, 196, 202, 0.1);
+            font-size: 0.9rem;
         }
         
         .price-item:last-child {
-            border-bottom: none;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            color: #da8a67;
+            color: #3b82f6;
         }
         
-        .btn {
+        .estimate-btn {
             width: 100%;
-            padding: 1rem 1.5rem;
-            background: linear-gradient(135deg, #da8a67, #c77a57);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            padding: 1rem;
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(218, 138, 103, 0.3);
-            margin-top: 1.5rem;
-            font-family: 'Montserrat', sans-serif;
+            transition: transform 0.2s ease;
         }
         
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(218, 138, 103, 0.4);
+        .estimate-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .estimate-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
         }
         
         @media (max-width: 1024px) {
-            .grid {
+            .layout {
                 grid-template-columns: 1fr;
             }
             
@@ -396,18 +389,18 @@
                 position: relative;
                 top: 0;
             }
+            
+            .build-options {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 768px) {
-            .build-type-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .package-comparison {
-                grid-template-columns: 1fr;
-            }
-            
             .cabin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .package-preview {
                 grid-template-columns: 1fr;
             }
         }
@@ -422,110 +415,197 @@
     </div>
 
     <div class="container">
-        <div class="grid">
+        <div class="layout">
             <div class="main-content">
-                <!-- Cabin Model Selection -->
-                <div class="card">
-                    <h2 class="section-title">🏠 Choose Your Cabin Model</h2>
+                <!-- Step 1: Choose Cabin Model -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Choose Your Cabin Model</div>
+                    </div>
                     
-                    <div class="cabin-grid" id="cabinGrid">
-                        <!-- Cabin options will be populated here -->
+                    <div class="cabin-grid">
+                        <div class="cabin-card" data-cabin="6x3-open" onclick="selectCabin('6x3-open')">
+                            <div class="cabin-floorplan">6m x 3m Floorplan</div>
+                            <div class="cabin-info">
+                                <div class="cabin-name">6m x 3m Open Room</div>
+                                <div class="cabin-price">$27,900</div>
+                            </div>
+                            <div class="cabin-specs">18m² • Open Living Space</div>
+                            <div class="cabin-description">Perfect for storage, office space, or studio</div>
+                        </div>
+                        
+                        <div class="cabin-card" data-cabin="7.2x3-studio" onclick="selectCabin('7.2x3-studio')">
+                            <div class="cabin-floorplan">7.2m x 3m Studio Floorplan</div>
+                            <div class="cabin-info">
+                                <div class="cabin-name">7.2m x 3m Studio</div>
+                                <div class="cabin-price">$57,900</div>
+                            </div>
+                            <div class="cabin-specs">21.6m² • Ensuite • Kitchenette</div>
+                            <div class="cabin-description">Self-contained studio with all essentials</div>
+                        </div>
+                        
+                        <div class="cabin-card" data-cabin="8.4x3-bedroom" onclick="selectCabin('8.4x3-bedroom')">
+                            <div class="cabin-floorplan">8.4m x 3m Bedroom Floorplan</div>
+                            <div class="cabin-info">
+                                <div class="cabin-name">8.4m x 3m One Bedroom</div>
+                                <div class="cabin-price">$67,900</div>
+                            </div>
+                            <div class="cabin-specs">25.2m² • 1 Bedroom • Bathroom • Kitchen</div>
+                            <div class="cabin-description">Comfortable one bedroom cabin</div>
+                        </div>
+                        
+                        <div class="cabin-card" data-cabin="10x3-one-bedroom" onclick="selectCabin('10x3-one-bedroom')">
+                            <div class="cabin-floorplan">10m x 3m One Bedroom Floorplan</div>
+                            <div class="cabin-info">
+                                <div class="cabin-name">10m x 3m One Bedroom</div>
+                                <div class="cabin-price">$81,900</div>
+                            </div>
+                            <div class="cabin-specs">30m² • 1 Bedroom • Bathroom • Kitchen</div>
+                            <div class="cabin-description">Spacious one bedroom with full amenities</div>
+                        </div>
+                        
+                        <div class="cabin-card" data-cabin="10x3-two-bedroom" onclick="selectCabin('10x3-two-bedroom')">
+                            <div class="cabin-floorplan">10m x 3m Two Bedroom Floorplan</div>
+                            <div class="cabin-info">
+                                <div class="cabin-name">10m x 3m Two Bedroom</div>
+                                <div class="cabin-price">$85,900</div>
+                            </div>
+                            <div class="cabin-specs">30m² • 2 Bedrooms • Bathroom • Kitchen</div>
+                            <div class="cabin-description">Perfect for small families or couples</div>
+                        </div>
+                        
+                        <div class="cabin-card" data-cabin="10.8x3-two-bedroom" onclick="selectCabin('10.8x3-two-bedroom')">
+                            <div class="cabin-floorplan">10.8m x 3m Two Bedroom Floorplan</div>
+                            <div class="cabin-info">
+                                <div class="cabin-name">10.8m x 3m Two Bedroom</div>
+                                <div class="cabin-price">$97,900</div>
+                            </div>
+                            <div class="cabin-specs">32.4m² • 2 Bedrooms • Bathroom • Kitchen</div>
+                            <div class="cabin-description">Our most popular two bedroom model</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Build Type -->
-                <div class="card">
-                    <h2 class="section-title">🔧 Build Type</h2>
+                <!-- Step 2: Build Type -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Choose Build Type</div>
+                    </div>
                     
-                    <div class="build-type-buttons" id="buildTypeButtons">
-                        <!-- Build type buttons will be populated here -->
+                    <div class="build-options">
+                        <div class="build-option selected" data-build="standard" onclick="selectBuildType('standard')">
+                            <div class="build-icon">🏗️</div>
+                            <div class="build-name">Standard Build</div>
+                            <div class="build-price">Included</div>
+                        </div>
+                        
+                        <div class="build-option" data-build="double-glazed" onclick="selectBuildType('double-glazed')">
+                            <div class="build-icon">🪟</div>
+                            <div class="build-name">Double Glazed</div>
+                            <div class="build-price">+$8,000</div>
+                        </div>
+                        
+                        <div class="build-option" data-build="built-to-code" onclick="selectBuildType('built-to-code')">
+                            <div class="build-icon">✅</div>
+                            <div class="build-name">Built to Code</div>
+                            <div class="build-price">+$15,000</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Bathroom Package -->
-                <div class="card">
-                    <h2 class="section-title">🚿 Bathroom Package</h2>
+                <!-- Step 3: Packages & Upgrades -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Packages & Upgrades</div>
+                    </div>
                     
-                    <div class="package-comparison" id="bathroomPackages">
-                        <!-- Bathroom packages will be populated here -->
+                    <!-- Bathroom Package -->
+                    <div class="package-section">
+                        <div class="package-title">Bathroom Package</div>
+                        <div class="package-preview">
+                            <div class="preview-image">Standard Bathroom</div>
+                            <div class="preview-image">Premium Bathroom</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Choose Package</label>
+                            <select class="form-select" id="bathroomPackage" onchange="updatePricing()">
+                                <option value="standard">Standard Bathroom (Included) - Basic fixtures & fittings</option>
+                                <option value="premium">Premium Bathroom (+$2,500) - Upgraded tiles, fixtures & vanity</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Kitchen Package -->
+                    <div class="package-section">
+                        <div class="package-title">Kitchen Package</div>
+                        <div class="package-preview">
+                            <div class="preview-image">Standard Kitchen</div>
+                            <div class="preview-image">Premium Kitchen</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Choose Package</label>
+                            <select class="form-select" id="kitchenPackage" onchange="updatePricing()">
+                                <option value="standard">Standard Kitchen (Included) - Basic cabinetry & appliances</option>
+                                <option value="premium">Premium Kitchen (+$3,500) - Stone benchtops & premium appliances</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Electrical Package -->
-                <div class="card">
-                    <h2 class="section-title">⚡ Electrical Package</h2>
-                    
-                    <div class="package-comparison" id="electricalPackages">
-                        <!-- Electrical packages will be populated here -->
+                <!-- Step 4: Additional Options -->
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Additional Options</div>
                     </div>
-                </div>
-
-                <!-- Door Options -->
-                <div class="card">
-                    <h2 class="section-title">🚪 Door Options</h2>
                     
+                    <!-- Door Upgrades -->
                     <div class="form-group">
-                        <label class="form-label">Door Type</label>
-                        <select class="form-select" id="doorType">
+                        <label class="form-label">Door Upgrades</label>
+                        <select class="form-select" id="doorType" onchange="updatePricing()">
                             <option value="standard">Standard Swing Doors (Included)</option>
                             <option value="cavity">Cavity Sliders (+$800 each)</option>
                             <option value="barn">Bespoke Barn Doors (+$1,200 each)</option>
                         </select>
-                        
-                        <div class="quantity-selector">
+                        <div class="quantity-control">
                             <span>Number of upgraded doors:</span>
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="changeDoorQuantity(-1)">-</button>
-                                <span class="quantity-display" id="doorQuantity">0</span>
-                                <button class="quantity-btn" onclick="changeDoorQuantity(1)">+</button>
-                            </div>
-                            <span style="font-size: 0.9rem; color: #9ca3af;">(Max: 3)</span>
+                            <button class="quantity-btn" onclick="changeDoorQuantity(-1)">-</button>
+                            <span class="quantity-display" id="doorQuantity">0</span>
+                            <button class="quantity-btn" onclick="changeDoorQuantity(1)">+</button>
+                            <span style="font-size: 0.9rem; color: #64748b;">(Max: 3)</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Cedar Panel Add-on -->
-                <div class="card">
-                    <h2 class="section-title">🌲 Cedar Panel Add-on</h2>
-                    
+                    <!-- Cedar Panels -->
                     <div class="form-group">
-                        <label class="form-label">Premium Cedar Panels (+$600 each)</label>
-                        <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1rem;">Add beautiful cedar panels to enhance your cabin's exterior aesthetic.</p>
-                        
-                        <div class="quantity-selector">
+                        <label class="form-label">Cedar Panel Add-on (+$600 each)</label>
+                        <div class="quantity-control">
                             <span>Number of cedar panels:</span>
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="changeCedarQuantity(-1)">-</button>
-                                <span class="quantity-display" id="cedarQuantity">0</span>
-                                <button class="quantity-btn" onclick="changeCedarQuantity(1)">+</button>
-                            </div>
-                            <span style="font-size: 0.9rem; color: #9ca3af;">(Max: 3)</span>
+                            <button class="quantity-btn" onclick="changeCedarQuantity(-1)">-</button>
+                            <span class="quantity-display" id="cedarQuantity">0</span>
+                            <button class="quantity-btn" onclick="changeCedarQuantity(1)">+</button>
+                            <span style="font-size: 0.9rem; color: #64748b;">(Max: 3)</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- Trailer Option -->
-                <div class="card">
-                    <h2 class="section-title">🚛 Trailer Option</h2>
-                    
+                    <!-- Trailer Option -->
                     <div class="form-group">
-                        <label class="form-label">Trailer Configuration</label>
-                        <select class="form-select" id="trailerOption">
+                        <label class="form-label">Trailer Option</label>
+                        <select class="form-select" id="trailerOption" onchange="updatePricing()">
                             <option value="none">No Trailer (Cabin Only)</option>
                             <option value="single">Single Axle Trailer (+$4,500)</option>
                             <option value="double">Double Axle Trailer (+$6,000)</option>
-                            <option value="triple">Triple Axle Trailer with Hydraulic Brakes (+$7,500)</option>
+                            <option value="triple">Triple Axle Trailer (+$7,500)</option>
                         </select>
                     </div>
-                </div>
 
-                <!-- Heat Pump Option -->
-                <div class="card">
-                    <h2 class="section-title">🔥 Heat Pump Option</h2>
-                    
+                    <!-- Heat Pump -->
                     <div class="form-group">
-                        <label class="form-label">Climate Control</label>
-                        <select class="form-select" id="heatPumpOption">
+                        <label class="form-label">Heat Pump Option</label>
+                        <select class="form-select" id="heatPumpOption" onchange="updatePricing()">
                             <option value="none">No Heat Pump</option>
                             <option value="standard">Standard Heat Pump (+$2,200)</option>
                             <option value="premium">Premium Inverter Heat Pump (+$3,500)</option>
@@ -534,241 +614,112 @@
                 </div>
             </div>
 
-            <!-- Sidebar with Estimate -->
+            <!-- Sidebar Estimate -->
             <div class="sidebar">
-                <div class="card quote-card">
-                    <h2 class="section-title">💰 Your Estimate</h2>
-                    
-                    <div class="price-display" id="totalPrice">$0</div>
-                    
+                <div class="estimate-card">
+                    <div class="estimate-title">Your Estimate</div>
+                    <div class="total-price" id="totalPrice">$0</div>
                     <div class="price-breakdown" id="priceBreakdown">
-                        <!-- Price breakdown will be populated here -->
+                        <div class="price-item">
+                            <span>Select a cabin to see estimate</span>
+                            <span>-</span>
+                        </div>
                     </div>
-                    
-                    <button class="btn" id="requestQuoteBtn">Request Detailed Estimate</button>
+                    <button class="estimate-btn" id="requestEstimateBtn" onclick="requestEstimate()" disabled>
+                        Request Detailed Estimate
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration data based on actual Freedom Cabins NZ models
-        const cabinModels = [
-            {
-                id: '6x3-open',
-                name: '6m x 3m Open Room',
-                specs: '18m² • Open Living Space',
-                description: 'Perfect for storage, office space, or studio',
-                basePrice: 27900
-            },
-            {
-                id: '7.2x3-studio',
-                name: '7.2m x 3m Studio',
-                specs: '21.6m² • Ensuite • Kitchenette',
-                description: 'Self-contained studio with all essentials',
-                basePrice: 57900
-            },
-            {
-                id: '8.4x3-bedroom',
-                name: '8.4m x 3m One Bedroom',
-                specs: '25.2m² • 1 Bedroom • Bathroom • Kitchen',
-                description: 'Comfortable one bedroom cabin',
-                basePrice: 67900
-            },
-            {
-                id: '8.4x3-walkthrough',
-                name: '8.4m x 3m Walk-Through',
-                specs: '25.2m² • 1 Bedroom • Walk-Through Bathroom',
-                description: 'Enhanced layout with walk-through bathroom',
-                basePrice: 68900
-            },
-            {
-                id: '10x3-one-bedroom',
-                name: '10m x 3m One Bedroom',
-                specs: '30m² • 1 Bedroom • Bathroom • Kitchen',
-                description: 'Spacious one bedroom with full amenities',
-                basePrice: 81900
-            },
-            {
-                id: '10x3-two-bedroom',
-                name: '10m x 3m Two Bedroom',
-                specs: '30m² • 2 Bedrooms • Bathroom • Kitchen',
-                description: 'Perfect for small families or couples',
-                basePrice: 85900
-            },
-            {
-                id: '10.8x3-two-bedroom',
-                name: '10.8m x 3m Two Bedroom',
-                specs: '32.4m² • 2 Bedrooms • Bathroom • Kitchen',
-                description: 'Our most popular two bedroom model',
-                basePrice: 97900
-            }
-        ];
+        // Configuration data
+        const cabinData = {
+            '6x3-open': { name: '6m x 3m Open Room', price: 27900 },
+            '7.2x3-studio': { name: '7.2m x 3m Studio', price: 57900 },
+            '8.4x3-bedroom': { name: '8.4m x 3m One Bedroom', price: 67900 },
+            '10x3-one-bedroom': { name: '10m x 3m One Bedroom', price: 81900 },
+            '10x3-two-bedroom': { name: '10m x 3m Two Bedroom', price: 85900 },
+            '10.8x3-two-bedroom': { name: '10.8m x 3m Two Bedroom', price: 97900 }
+        };
 
         const buildTypes = {
-            'standard': { name: 'Standard Build', price: 0, icon: '🏗️' },
-            'double-glazed': { name: 'Double Glazed Upgrade', price: 8000, icon: '🪟' },
-            'built-to-code': { name: 'Built to Code', price: 15000, icon: '✅' }
+            'standard': { name: 'Standard Build', price: 0 },
+            'double-glazed': { name: 'Double Glazed Upgrade', price: 8000 },
+            'built-to-code': { name: 'Built to Code', price: 15000 }
         };
 
-        const bathroomPackages = {
-            'standard': { name: 'Standard Bathroom', price: 0, image: 'Standard fixtures & fittings' },
-            'premium': { name: 'Premium Bathroom', price: 2500, image: 'Upgraded tiles, fixtures & vanity' }
+        const packages = {
+            bathroom: { standard: 0, premium: 2500 },
+            kitchen: { standard: 0, premium: 3500 }
         };
 
-        const electricalPackages = {
-            'standard': { name: 'Standard Electrical', price: 0, image: 'Basic lighting & power points' },
-            'premium': { name: 'Premium Electrical', price: 1500, image: 'LED lighting, USB points & extras' }
+        const doorPrices = {
+            'standard': 0,
+            'cavity': 800,
+            'barn': 1200
         };
 
-        const doorTypes = {
-            'standard': { name: 'Standard Swing Doors', price: 0 },
-            'cavity': { name: 'Cavity Sliders', price: 800 },
-            'barn': { name: 'Bespoke Barn Doors', price: 1200 }
+        const trailerPrices = {
+            'none': 0,
+            'single': 4500,
+            'double': 6000,
+            'triple': 7500
         };
 
-        const trailerOptions = {
-            'none': { name: 'No Trailer', price: 0 },
-            'single': { name: 'Single Axle Trailer', price: 4500 },
-            'double': { name: 'Double Axle Trailer', price: 6000 },
-            'triple': { name: 'Triple Axle Trailer with Hydraulic Brakes', price: 7500 }
+        const heatPumpPrices = {
+            'none': 0,
+            'standard': 2200,
+            'premium': 3500
         };
 
-        const heatPumpOptions = {
-            'none': { name: 'No Heat Pump', price: 0 },
-            'standard': { name: 'Standard Heat Pump', price: 2200 },
-            'premium': { name: 'Premium Inverter Heat Pump', price: 3500 }
-        };
-
-        // State management
-        let currentConfig = {
-            cabinModel: null,
+        // Current configuration
+        let config = {
+            cabin: null,
             buildType: 'standard',
-            bathroomPackage: 'standard',
-            electricalPackage: 'standard',
-            doorType: 'standard',
             doorQuantity: 0,
-            cedarQuantity: 0,
-            trailerOption: 'none',
-            heatPumpOption: 'none'
+            cedarQuantity: 0
         };
-
-        // Initialize the configurator
-        function init() {
-            renderCabinModels();
-            renderBuildTypes();
-            renderBathroomPackages();
-            renderElectricalPackages();
-            setupEventListeners();
-            updatePricing();
-        }
-
-        function renderCabinModels() {
-            const grid = document.getElementById('cabinGrid');
-            grid.innerHTML = cabinModels.map(cabin => `
-                <div class="cabin-option" data-cabin-id="${cabin.id}" onclick="selectCabin('${cabin.id}')">
-                    <div class="cabin-header">
-                        <div class="cabin-name">${cabin.name}</div>
-                        <div class="cabin-price">$${cabin.basePrice.toLocaleString()}</div>
-                    </div>
-                    <div class="cabin-specs">${cabin.specs}</div>
-                    <div class="cabin-description">${cabin.description}</div>
-                </div>
-            `).join('');
-        }
-
-        function renderBuildTypes() {
-            const container = document.getElementById('buildTypeButtons');
-            container.innerHTML = Object.entries(buildTypes).map(([key, type]) => `
-                <div class="build-type-btn ${key === 'standard' ? 'selected' : ''}" data-build-type="${key}" onclick="selectBuildType('${key}')">
-                    <div class="build-type-icon">${type.icon}</div>
-                    <div class="build-type-name">${type.name}</div>
-                    <div class="build-type-price">${type.price > 0 ? `+$${type.price.toLocaleString()}` : 'Included'}</div>
-                </div>
-            `).join('');
-        }
-
-        function renderBathroomPackages() {
-            const container = document.getElementById('bathroomPackages');
-            container.innerHTML = Object.entries(bathroomPackages).map(([key, pkg]) => `
-                <div class="package-option ${key === 'standard' ? 'selected' : ''}" data-package="bathroom-${key}" onclick="selectBathroomPackage('${key}')">
-                    <div class="package-image">${pkg.image}</div>
-                    <div class="package-name">${pkg.name}</div>
-                    <div class="package-price">${pkg.price > 0 ? `+$${pkg.price.toLocaleString()}` : 'Included'}</div>
-                </div>
-            `).join('');
-        }
-
-        function renderElectricalPackages() {
-            const container = document.getElementById('electricalPackages');
-            container.innerHTML = Object.entries(electricalPackages).map(([key, pkg]) => `
-                <div class="package-option ${key === 'standard' ? 'selected' : ''}" data-package="electrical-${key}" onclick="selectElectricalPackage('${key}')">
-                    <div class="package-image">${pkg.image}</div>
-                    <div class="package-name">${pkg.name}</div>
-                    <div class="package-price">${pkg.price > 0 ? `+$${pkg.price.toLocaleString()}` : 'Included'}</div>
-                </div>
-            `).join('');
-        }
 
         function selectCabin(cabinId) {
-            document.querySelectorAll('.cabin-option').forEach(el => el.classList.remove('selected'));
-            document.querySelector(`[data-cabin-id="${cabinId}"]`).classList.add('selected');
-            currentConfig.cabinModel = cabinId;
+            // Remove previous selection
+            document.querySelectorAll('.cabin-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked cabin
+            document.querySelector(`[data-cabin="${cabinId}"]`).classList.add('selected');
+            
+            config.cabin = cabinId;
             updatePricing();
         }
 
         function selectBuildType(buildType) {
-            document.querySelectorAll('.build-type-btn').forEach(el => el.classList.remove('selected'));
-            document.querySelector(`[data-build-type="${buildType}"]`).classList.add('selected');
-            currentConfig.buildType = buildType;
-            updatePricing();
-        }
-
-        function selectBathroomPackage(packageType) {
-            document.querySelectorAll('[data-package^="bathroom-"]').forEach(el => el.classList.remove('selected'));
-            document.querySelector(`[data-package="bathroom-${packageType}"]`).classList.add('selected');
-            currentConfig.bathroomPackage = packageType;
-            updatePricing();
-        }
-
-        function selectElectricalPackage(packageType) {
-            document.querySelectorAll('[data-package^="electrical-"]').forEach(el => el.classList.remove('selected'));
-            document.querySelector(`[data-package="electrical-${packageType}"]`).classList.add('selected');
-            currentConfig.electricalPackage = packageType;
+            // Remove previous selection
+            document.querySelectorAll('.build-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selection to clicked build type
+            document.querySelector(`[data-build="${buildType}"]`).classList.add('selected');
+            
+            config.buildType = buildType;
             updatePricing();
         }
 
         function changeDoorQuantity(change) {
-            const newQuantity = Math.max(0, Math.min(3, currentConfig.doorQuantity + change));
-            currentConfig.doorQuantity = newQuantity;
+            const newQuantity = Math.max(0, Math.min(3, config.doorQuantity + change));
+            config.doorQuantity = newQuantity;
             document.getElementById('doorQuantity').textContent = newQuantity;
             updatePricing();
         }
 
         function changeCedarQuantity(change) {
-            const newQuantity = Math.max(0, Math.min(3, currentConfig.cedarQuantity + change));
-            currentConfig.cedarQuantity = newQuantity;
+            const newQuantity = Math.max(0, Math.min(3, config.cedarQuantity + change));
+            config.cedarQuantity = newQuantity;
             document.getElementById('cedarQuantity').textContent = newQuantity;
             updatePricing();
-        }
-
-        function setupEventListeners() {
-            document.getElementById('doorType').addEventListener('change', (e) => {
-                currentConfig.doorType = e.target.value;
-                updatePricing();
-            });
-
-            document.getElementById('trailerOption').addEventListener('change', (e) => {
-                currentConfig.trailerOption = e.target.value;
-                updatePricing();
-            });
-
-            document.getElementById('heatPumpOption').addEventListener('change', (e) => {
-                currentConfig.heatPumpOption = e.target.value;
-                updatePricing();
-            });
-
-            document.getElementById('requestQuoteBtn').addEventListener('click', requestEstimate);
         }
 
         function updatePricing() {
@@ -776,13 +727,78 @@
             const breakdown = [];
 
             // Base cabin price
-            if (currentConfig.cabinModel) {
-                const cabin = cabinModels.find(c => c.id === currentConfig.cabinModel);
-                total += cabin.basePrice;
-                breakdown.push({ name: cabin.name, price: cabin.basePrice });
+            if (config.cabin && cabinData[config.cabin]) {
+                const cabin = cabinData[config.cabin];
+                total += cabin.price;
+                breakdown.push({ name: cabin.name, price: cabin.price });
             }
 
             // Build type
-            const buildType = buildTypes[currentConfig.buildType];
-            if (buildType.price > 0) {
-                total += buildType.price;
+            if (config.buildType && buildTypes[config.buildType]) {
+                const buildType = buildTypes[config.buildType];
+                if (buildType.price > 0) {
+                    total += buildType.price;
+                    breakdown.push({ name: buildType.name, price: buildType.price });
+                }
+            }
+
+            // Bathroom package
+            const bathroomSelect = document.getElementById('bathroomPackage');
+            if (bathroomSelect && bathroomSelect.value === 'premium') {
+                total += packages.bathroom.premium;
+                breakdown.push({ name: 'Premium Bathroom Package', price: packages.bathroom.premium });
+            }
+
+            // Kitchen package
+            const kitchenSelect = document.getElementById('kitchenPackage');
+            if (kitchenSelect && kitchenSelect.value === 'premium') {
+                total += packages.kitchen.premium;
+                breakdown.push({ name: 'Premium Kitchen Package', price: packages.kitchen.premium });
+            }
+
+            // Door upgrades
+            const doorSelect = document.getElementById('doorType');
+            if (doorSelect && config.doorQuantity > 0) {
+                const doorPrice = doorPrices[doorSelect.value] || 0;
+                const doorTotal = doorPrice * config.doorQuantity;
+                if (doorTotal > 0) {
+                    total += doorTotal;
+                    breakdown.push({ 
+                        name: `Door Upgrades (${config.doorQuantity}x)`, 
+                        price: doorTotal 
+                    });
+                }
+            }
+
+            // Cedar panels
+            if (config.cedarQuantity > 0) {
+                const cedarTotal = 600 * config.cedarQuantity;
+                total += cedarTotal;
+                breakdown.push({ 
+                    name: `Cedar Panels (${config.cedarQuantity}x)`, 
+                    price: cedarTotal 
+                });
+            }
+
+            // Trailer option
+            const trailerSelect = document.getElementById('trailerOption');
+            if (trailerSelect && trailerPrices[trailerSelect.value] > 0) {
+                const trailerPrice = trailerPrices[trailerSelect.value];
+                total += trailerPrice;
+                breakdown.push({ name: 'Trailer Option', price: trailerPrice });
+            }
+
+            // Heat pump
+            const heatPumpSelect = document.getElementById('heatPumpOption');
+            if (heatPumpSelect && heatPumpPrices[heatPumpSelect.value] > 0) {
+                const heatPumpPrice = heatPumpPrices[heatPumpSelect.value];
+                total += heatPumpPrice;
+                breakdown.push({ name: 'Heat Pump', price: heatPumpPrice });
+            }
+
+            // Add GST
+            const gst = total * 0.15;
+            const totalIncGST = total + gst;
+
+            // Update display
+            document.getElementById('totalPrice').textContent = `$${totalIncGST.toLocaleString()}`;
