@@ -125,23 +125,109 @@
             color: #c2c4ca;
         }
         
-        .cabin-spec {
-            background: rgba(58, 63, 80, 0.4);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .cabin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
         
-        .spec-title {
+        .cabin-option {
+            background: rgba(58, 63, 80, 0.4);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .cabin-option:hover {
+            border-color: #da8a67;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cabin-option.selected {
+            border-color: #da8a67;
+            background: rgba(218, 138, 103, 0.1);
+        }
+        
+        .cabin-image {
+            width: 100%;
+            height: 120px;
+            background: #da8a67;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .cabin-name {
             font-weight: 600;
             color: #da8a67;
             margin-bottom: 0.5rem;
         }
         
-        .spec-details {
-            font-size: 0.9rem;
+        .cabin-description {
+            font-size: 0.85rem;
             color: #9ca3af;
-            line-height: 1.4;
+            line-height: 1.3;
+        }
+        
+        .cabin-price {
+            font-weight: 600;
+            color: #c2c4ca;
+            margin-top: 0.5rem;
+        }
+        
+        .door-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .door-type {
+            background: rgba(58, 63, 80, 0.4);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .door-type h4 {
+            color: #da8a67;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .door-quantity {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .quantity-btn {
+            background: #da8a67;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .quantity-display {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
         }
         
         .sidebar {
@@ -312,6 +398,14 @@
             .card {
                 padding: 1.5rem;
             }
+            
+            .cabin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .door-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -330,20 +424,15 @@
                 <div class="card">
                     <h2 class="section-title">🏠 Choose Your Cabin Model</h2>
                     
-                    <div class="form-group">
-                        <label class="form-label">Cabin Model</label>
-                        <select class="form-select" id="cabinModel">
-                            <option value="">Choose a cabin model...</option>
-                            <option value="8.4x3-1bed">8.4m x 3m - 1 Bedroom ($67,900)</option>
-                            <option value="10x3-1bed">10m x 3m - 1 Bedroom ($81,900)</option>
-                            <option value="10x3-1bed-ensuite">10m x 3m - 1 Bedroom En Suite ($82,900)</option>
-                            <option value="10x3-2bed">10m x 3m - 2 Bedroom ($86,900)</option>
-                            <option value="10.8x3-1bed">10.8m x 3m - 1 Bedroom ($97,900)</option>
-                            <option value="10.8x3-2bed">10.8m x 3m - 2 Bedroom ($98,900)</option>
-                            <option value="12x4-2bed">12m x 4m - 2 Bedroom ($125,900)</option>
-                        </select>
+                    <div class="cabin-grid" id="cabinGrid">
+                        <!-- Cabin options will be populated here -->
                     </div>
+                </div>
 
+                <!-- Build Type -->
+                <div class="card">
+                    <h2 class="section-title">🔧 Build Type</h2>
+                    
                     <div class="form-group">
                         <label class="form-label">Build Type</label>
                         <select class="form-select" id="buildCategory">
@@ -351,15 +440,6 @@
                             <option value="double-glazed">Double Glazed Joinery Upgrade (+$8,000)</option>
                             <option value="built-to-code">Built to Code (+$15,000)</option>
                         </select>
-                    </div>
-                    
-                    <div id="cabinSpecs" class="cabin-spec">
-                        <div class="spec-title">Choose Your Cabin</div>
-                        <div class="spec-details">
-                            <strong>Step 1:</strong> Select your cabin model above<br>
-                            <strong>Step 2:</strong> Choose your build type<br>
-                            <strong>Step 3:</strong> Customize your upgrades
-                        </div>
                     </div>
                 </div>
 
@@ -370,30 +450,3 @@
                     <div class="form-group">
                         <label class="form-label">🚿 Bathroom Package</label>
                         <select class="form-select" id="bathroomPackage">
-                            <option value="standard">Standard Bathroom (Free)</option>
-                            <option value="deluxe">Deluxe Bathroom (+$3,500)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">🍳 Kitchen Package</label>
-                        <select class="form-select" id="kitchenPackage">
-                            <option value="standard">Standard Kitchen (Free)</option>
-                            <option value="deluxe">Deluxe Kitchen (+$4,200)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">🌲 Cedar Panel Cladding</label>
-                        <select class="form-select" id="cedarPanels">
-                            <option value="none">No Cedar Panels (Free)</option>
-                            <option value="partial">Partial Cedar Panels (+$3,800)</option>
-                            <option value="full">Full Cedar Cladding (+$7,500)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">🗄️ Storage Cupboards</label>
-                        <select class="form-select" id="cupboards">
-                            <option value="standard">Standard Cupboards</option>
-                            <option value="premium">Premium
