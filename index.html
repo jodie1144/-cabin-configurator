@@ -362,23 +362,6 @@
             line-height: 1.4;
             margin: 0;
         }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        /* Error message */
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: none;
-        }
         
         @media (max-width: 1024px) {
             .grid {
@@ -439,3 +422,12 @@
         <div class="grid">
             <div class="main-content">
                 <!-- Cabin Model Selection -->
+                <div class="card">
+                    <h2 class="section-title">🏠 Choose Your Cabin Model</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Build Category</label>
+                        <select class="form-select" id="buildCategory">
+                            <option value="basic">Basic Build</option>
+                            <option value="standard">Standard Build (+$15,000)</option>
+                            
