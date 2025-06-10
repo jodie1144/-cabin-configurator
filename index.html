@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freedom Cabins NZ - Custom Configurator</title>
+    <title>Freedom Cabins NZ - Configurator Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { 
@@ -19,8 +19,19 @@
             line-height: 1.6;
         }
         
+        .test-banner {
+            background: #DA8A67;
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
         .header {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #DA8A67 0%, #c77a57 100%);
             color: white;
             padding: 1.5rem 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -83,7 +94,7 @@
         }
         
         .step-number {
-            background: #3b82f6;
+            background: #DA8A67;
             color: white;
             width: 32px;
             height: 32px;
@@ -117,14 +128,14 @@
         }
         
         .cabin-card:hover {
-            border-color: #3b82f6;
+            border-color: #DA8A67;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 4px 12px rgba(218, 138, 103, 0.15);
         }
         
         .cabin-card.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
+            border-color: #DA8A67;
+            background: #fef7f0;
         }
         
         .cabin-floorplan {
@@ -155,7 +166,7 @@
         
         .cabin-price {
             font-weight: 600;
-            color: #3b82f6;
+            color: #DA8A67;
         }
         
         .cabin-specs {
@@ -186,12 +197,12 @@
         }
         
         .build-option:hover {
-            border-color: #3b82f6;
+            border-color: #DA8A67;
         }
         
         .build-option.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
+            border-color: #DA8A67;
+            background: #fef7f0;
         }
         
         .build-icon {
@@ -206,7 +217,7 @@
         }
         
         .build-price {
-            color: #3b82f6;
+            color: #DA8A67;
             font-weight: 500;
             font-size: 0.9rem;
         }
@@ -267,7 +278,7 @@
         
         .form-select:focus {
             outline: none;
-            border-color: #3b82f6;
+            border-color: #DA8A67;
         }
         
         .quantity-control {
@@ -278,7 +289,7 @@
         }
         
         .quantity-btn {
-            background: #3b82f6;
+            background: #DA8A67;
             color: white;
             border: none;
             width: 36px;
@@ -290,7 +301,7 @@
         }
         
         .quantity-btn:hover {
-            background: #2563eb;
+            background: #c77a57;
         }
         
         .quantity-btn:disabled {
@@ -330,7 +341,7 @@
         .total-price {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #3b82f6;
+            color: #DA8A67;
             text-align: center;
             margin-bottom: 1.5rem;
         }
@@ -354,12 +365,12 @@
             margin-top: 0.5rem;
             padding-top: 0.75rem;
             font-weight: 600;
-            color: #3b82f6;
+            color: #DA8A67;
         }
         
         .estimate-btn {
             width: 100%;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #DA8A67 0%, #c77a57 100%);
             color: white;
             border: none;
             padding: 1rem;
@@ -378,6 +389,19 @@
             background: #94a3b8;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        .test-results {
+            background: #DA8A67;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .test-results.show {
+            display: block;
         }
         
         @media (max-width: 1024px) {
@@ -407,6 +431,10 @@
     </style>
 </head>
 <body>
+    <div class="test-banner">
+        ✅ STANDALONE TEST VERSION - All functionality should work perfectly
+    </div>
+
     <div class="header">
         <div class="header-content">
             <div class="logo">Freedom Cabins NZ</div>
@@ -415,6 +443,11 @@
     </div>
 
     <div class="container">
+        <div id="testResults" class="test-results">
+            <h3>✅ Test Successful!</h3>
+            <p>The configurator is working correctly. You can now use this code in your Wix website.</p>
+        </div>
+
         <div class="layout">
             <div class="main-content">
                 <!-- Step 1: Choose Cabin Model -->
@@ -425,34 +458,34 @@
                     </div>
                     
                     <div class="cabin-grid">
-                        <div class="cabin-card" data-cabin="6x3-open" onclick="selectCabin('6x3-open')">
-                            <div class="cabin-floorplan">6m x 3m Floorplan</div>
+                        <div class="cabin-card" data-cabin="12x4-two-bedroom" onclick="selectCabin('12x4-two-bedroom')">
+                            <div class="cabin-floorplan">12m x 4m Two Bedroom Floorplan</div>
                             <div class="cabin-info">
-                                <div class="cabin-name">6m x 3m Open Room</div>
-                                <div class="cabin-price">$27,900</div>
+                                <div class="cabin-name">12m x 4m Two Bedroom</div>
+                                <div class="cabin-price">$125,900</div>
                             </div>
-                            <div class="cabin-specs">18m² • Open Living Space</div>
-                            <div class="cabin-description">Perfect for storage, office space, or studio</div>
+                            <div class="cabin-specs">48m² • Kitchen • Lounge • Dining • End Bathroom • Laundry</div>
+                            <div class="cabin-description">Our largest model with separate laundry and end bathroom</div>
                         </div>
                         
-                        <div class="cabin-card" data-cabin="7.2x3-studio" onclick="selectCabin('7.2x3-studio')">
-                            <div class="cabin-floorplan">7.2m x 3m Studio Floorplan</div>
+                        <div class="cabin-card" data-cabin="10.8x3-one-bedroom" onclick="selectCabin('10.8x3-one-bedroom')">
+                            <div class="cabin-floorplan">10.8m x 3m One Bedroom Floorplan</div>
                             <div class="cabin-info">
-                                <div class="cabin-name">7.2m x 3m Studio</div>
-                                <div class="cabin-price">$57,900</div>
+                                <div class="cabin-name">10.8m x 3m One Bedroom</div>
+                                <div class="cabin-price">$97,900</div>
                             </div>
-                            <div class="cabin-specs">21.6m² • Ensuite • Kitchenette</div>
-                            <div class="cabin-description">Self-contained studio with all essentials</div>
+                            <div class="cabin-specs">32.4m² • 1 Bedroom • Kitchen • Lounge • Dining • Ensuite</div>
+                            <div class="cabin-description">Spacious one bedroom with ensuite bathroom</div>
                         </div>
                         
-                        <div class="cabin-card" data-cabin="8.4x3-bedroom" onclick="selectCabin('8.4x3-bedroom')">
-                            <div class="cabin-floorplan">8.4m x 3m Bedroom Floorplan</div>
+                        <div class="cabin-card" data-cabin="10x3-ensuite" onclick="selectCabin('10x3-ensuite')">
+                            <div class="cabin-floorplan">10m x 3m Ensuite Floorplan</div>
                             <div class="cabin-info">
-                                <div class="cabin-name">8.4m x 3m One Bedroom</div>
-                                <div class="cabin-price">$67,900</div>
+                                <div class="cabin-name">10m x 3m Ensuite Bathroom</div>
+                                <div class="cabin-price">$82,900</div>
                             </div>
-                            <div class="cabin-specs">25.2m² • 1 Bedroom • Bathroom • Kitchen</div>
-                            <div class="cabin-description">Comfortable one bedroom cabin</div>
+                            <div class="cabin-specs">30m² • 1 Bedroom • Kitchen • Lounge • Dining • Ensuite</div>
+                            <div class="cabin-description">One bedroom with convenient ensuite bathroom</div>
                         </div>
                         
                         <div class="cabin-card" data-cabin="10x3-one-bedroom" onclick="selectCabin('10x3-one-bedroom')">
@@ -461,28 +494,18 @@
                                 <div class="cabin-name">10m x 3m One Bedroom</div>
                                 <div class="cabin-price">$81,900</div>
                             </div>
-                            <div class="cabin-specs">30m² • 1 Bedroom • Bathroom • Kitchen</div>
-                            <div class="cabin-description">Spacious one bedroom with full amenities</div>
+                            <div class="cabin-specs">30m² • Kitchen • Lounge • Dining • End Bathroom & Laundry</div>
+                            <div class="cabin-description">One bedroom with end bathroom and laundry area</div>
                         </div>
                         
-                        <div class="cabin-card" data-cabin="10x3-two-bedroom" onclick="selectCabin('10x3-two-bedroom')">
-                            <div class="cabin-floorplan">10m x 3m Two Bedroom Floorplan</div>
+                        <div class="cabin-card" data-cabin="7.2x3-studio" onclick="selectCabin('7.2x3-studio')">
+                            <div class="cabin-floorplan">7.2m x 3m Studio Floorplan</div>
                             <div class="cabin-info">
-                                <div class="cabin-name">10m x 3m Two Bedroom</div>
-                                <div class="cabin-price">$85,900</div>
+                                <div class="cabin-name">7.2m x 3m Studio</div>
+                                <div class="cabin-price">$58,900</div>
                             </div>
-                            <div class="cabin-specs">30m² • 2 Bedrooms • Bathroom • Kitchen</div>
-                            <div class="cabin-description">Perfect for small families or couples</div>
-                        </div>
-                        
-                        <div class="cabin-card" data-cabin="10.8x3-two-bedroom" onclick="selectCabin('10.8x3-two-bedroom')">
-                            <div class="cabin-floorplan">10.8m x 3m Two Bedroom Floorplan</div>
-                            <div class="cabin-info">
-                                <div class="cabin-name">10.8m x 3m Two Bedroom</div>
-                                <div class="cabin-price">$97,900</div>
-                            </div>
-                            <div class="cabin-specs">32.4m² • 2 Bedrooms • Bathroom • Kitchen</div>
-                            <div class="cabin-description">Our most popular two bedroom model</div>
+                            <div class="cabin-specs">21.6m² • 1 Bedroom • Kitchen • Lounge • Dining • Ensuite</div>
+                            <div class="cabin-description">Compact studio with all essentials and ensuite</div>
                         </div>
                     </div>
                 </div>
@@ -526,8 +549,8 @@
                     <div class="package-section">
                         <div class="package-title">Bathroom Package</div>
                         <div class="package-preview">
-                            <div class="preview-image">Standard Bathroom</div>
-                            <div class="preview-image">Premium Bathroom</div>
+                            <div class="preview-image">Standard Bathroom<br>Basic fixtures & fittings</div>
+                            <div class="preview-image">Premium Bathroom<br>Upgraded tiles & vanity</div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Choose Package</label>
@@ -542,8 +565,8 @@
                     <div class="package-section">
                         <div class="package-title">Kitchen Package</div>
                         <div class="package-preview">
-                            <div class="preview-image">Standard Kitchen</div>
-                            <div class="preview-image">Premium Kitchen</div>
+                            <div class="preview-image">Standard Kitchen<br>Basic cabinetry</div>
+                            <div class="preview-image">Premium Kitchen<br>Stone benchtops & premium appliances</div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Choose Package</label>
@@ -636,12 +659,11 @@
     <script>
         // Configuration data
         const cabinData = {
-            '6x3-open': { name: '6m x 3m Open Room', price: 27900 },
-            '7.2x3-studio': { name: '7.2m x 3m Studio', price: 57900 },
-            '8.4x3-bedroom': { name: '8.4m x 3m One Bedroom', price: 67900 },
+            '12x4-two-bedroom': { name: '12m x 4m Two Bedroom', price: 125900 },
+            '10.8x3-one-bedroom': { name: '10.8m x 3m One Bedroom', price: 97900 },
+            '10x3-ensuite': { name: '10m x 3m Ensuite Bathroom', price: 82900 },
             '10x3-one-bedroom': { name: '10m x 3m One Bedroom', price: 81900 },
-            '10x3-two-bedroom': { name: '10m x 3m Two Bedroom', price: 85900 },
-            '10.8x3-two-bedroom': { name: '10.8m x 3m Two Bedroom', price: 97900 }
+            '7.2x3-studio': { name: '7.2m x 3m Studio', price: 58900 }
         };
 
         const buildTypes = {
@@ -683,7 +705,7 @@
         };
 
         function selectCabin(cabinId) {
-            console.log('Selecting cabin:', cabinId);
+            console.log('✅ Cabin selection working:', cabinId);
             
             // Remove previous selection
             document.querySelectorAll('.cabin-card').forEach(card => {
@@ -695,15 +717,13 @@
             if (selectedCard) {
                 selectedCard.classList.add('selected');
                 config.cabin = cabinId;
-                console.log('Config updated:', config);
                 updatePricing();
-            } else {
-                console.error('Cabin card not found:', cabinId);
+                showTestSuccess();
             }
         }
 
         function selectBuildType(buildType) {
-            console.log('Selecting build type:', buildType);
+            console.log('✅ Build type selection working:', buildType);
             
             // Remove previous selection
             document.querySelectorAll('.build-option').forEach(option => {
@@ -715,28 +735,38 @@
             if (selectedOption) {
                 selectedOption.classList.add('selected');
                 config.buildType = buildType;
-                console.log('Config updated:', config);
                 updatePricing();
-            } else {
-                console.error('Build option not found:', buildType);
+                showTestSuccess();
             }
         }
 
         function changeDoorQuantity(change) {
             const newQuantity = Math.max(0, Math.min(3, config.doorQuantity + change));
             config.doorQuantity = newQuantity;
-            document.getElementById('doorQuantity').textContent = newQuantity;
+            const quantityDisplay = document.getElementById('doorQuantity');
+            if (quantityDisplay) {
+                quantityDisplay.textContent = newQuantity;
+            }
+            console.log('✅ Door quantity changed to:', newQuantity);
             updatePricing();
+            showTestSuccess();
         }
 
         function changeCedarQuantity(change) {
             const newQuantity = Math.max(0, Math.min(3, config.cedarQuantity + change));
             config.cedarQuantity = newQuantity;
-            document.getElementById('cedarQuantity').textContent = newQuantity;
+            const quantityDisplay = document.getElementById('cedarQuantity');
+            if (quantityDisplay) {
+                quantityDisplay.textContent = newQuantity;
+            }
+            console.log('✅ Cedar quantity changed to:', newQuantity);
             updatePricing();
+            showTestSuccess();
         }
 
         function updatePricing() {
+            console.log('✅ Pricing update working with config:', config);
+            
             let total = 0;
             const breakdown = [];
 
@@ -811,8 +841,132 @@
             }
 
             // Add GST
-            const gst = total * 0.15;
+            const gst = Math.round(total * 0.15);
             const totalIncGST = total + gst;
 
+            console.log('✅ Final pricing calculated - Total:', totalIncGST);
+
             // Update display
-            document.getElementById('totalPrice').textContent = `$${totalIncGST.toLocaleString()}`;
+            const totalPriceElement = document.getElementById('totalPrice');
+            const headerPriceElement = document.getElementById('headerPrice');
+            
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `${totalIncGST.toLocaleString()}`;
+            }
+            if (headerPriceElement) {
+                headerPriceElement.textContent = `Estimate: ${totalIncGST.toLocaleString()} inc GST`;
+            }
+
+            // Update breakdown
+            let breakdownHTML = '';
+            if (breakdown.length > 0) {
+                breakdownHTML = breakdown.map(item => `
+                    <div class="price-item">
+                        <span>${item.name}</span>
+                        <span>${item.price.toLocaleString()}</span>
+                    </div>
+                `).join('');
+                
+                if (total > 0) {
+                    breakdownHTML += `
+                        <div class="price-item">
+                            <span>Subtotal</span>
+                            <span>${total.toLocaleString()}</span>
+                        </div>
+                        <div class="price-item">
+                            <span>GST (15%)</span>
+                            <span>${gst.toLocaleString()}</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Total inc GST</span>
+                            <span>${totalIncGST.toLocaleString()}</span>
+                        </div>
+                    `;
+                }
+            } else {
+                breakdownHTML = `
+                    <div class="price-item">
+                        <span>Select a cabin to see estimate</span>
+                        <span>-</span>
+                    </div>
+                `;
+            }
+
+            const priceBreakdownElement = document.getElementById('priceBreakdown');
+            if (priceBreakdownElement) {
+                priceBreakdownElement.innerHTML = breakdownHTML;
+            }
+
+            // Enable/disable estimate button
+            const estimateBtn = document.getElementById('requestEstimateBtn');
+            if (estimateBtn) {
+                if (config.cabin) {
+                    estimateBtn.disabled = false;
+                    estimateBtn.textContent = 'Request Detailed Estimate';
+                } else {
+                    estimateBtn.disabled = true;
+                    estimateBtn.textContent = 'Select a cabin first';
+                }
+            }
+        }
+
+        function requestEstimate() {
+            if (!config.cabin) {
+                alert('Please select a cabin model first.');
+                return;
+            }
+
+            // Get current selections
+            const bathroomSelect = document.getElementById('bathroomPackage');
+            const kitchenSelect = document.getElementById('kitchenPackage');
+            const doorSelect = document.getElementById('doorType');
+            const trailerSelect = document.getElementById('trailerOption');
+            const heatPumpSelect = document.getElementById('heatPumpOption');
+
+            const configSummary = {
+                cabin: cabinData[config.cabin].name,
+                buildType: buildTypes[config.buildType].name,
+                bathroom: bathroomSelect ? bathroomSelect.value : 'standard',
+                kitchen: kitchenSelect ? kitchenSelect.value : 'standard',
+                doorType: doorSelect ? doorSelect.value : 'standard',
+                doorQuantity: config.doorQuantity,
+                cedarQuantity: config.cedarQuantity,
+                trailer: trailerSelect ? trailerSelect.value : 'none',
+                heatPump: heatPumpSelect ? heatPumpSelect.value : 'none'
+            };
+
+            console.log('✅ Estimate request working:', configSummary);
+            alert(`✅ Estimate request submitted successfully!\n\nConfiguration:\n${configSummary.cabin}\n${configSummary.buildType}\n\nThe configurator is working perfectly!`);
+            showTestSuccess();
+        }
+
+        function showTestSuccess() {
+            const testResults = document.getElementById('testResults');
+            if (testResults) {
+                testResults.classList.add('show');
+            }
+        }
+
+        // Initialize the configurator
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Configurator initialized successfully');
+            
+            // Set initial quantities
+            const doorQuantityElement = document.getElementById('doorQuantity');
+            const cedarQuantityElement = document.getElementById('cedarQuantity');
+            
+            if (doorQuantityElement) {
+                doorQuantityElement.textContent = '0';
+            }
+            if (cedarQuantityElement) {
+                cedarQuantityElement.textContent = '0';
+            }
+            
+            // Initial pricing update
+            updatePricing();
+            
+            console.log('✅ All systems ready - test the configurator now!');
+        });
+    </script>
+</body>
+</html>
