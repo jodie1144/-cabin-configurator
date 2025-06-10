@@ -711,28 +711,36 @@
             console.log('🛡️ Email protection enabled - all mailto: links will be blocked');
         })();
 
-        // Check if we're in Wix environment and import Wix Data API
+        // Check if we're in Wix environment and import Wix modules
         let wixDataAvailable = false;
+        let wixCrmAvailable = false;
         
-        // Try to import Wix Data - this will only work in Wix environment
+        // Try to import Wix Data and CRM - this will only work in Wix environment
         try {
             if (typeof wixData !== 'undefined') {
                 wixDataAvailable = true;
                 console.log('✅ Wix Data API available');
             } else {
-                // In Wix, import the module
-                import('wix-data').then(wixDataModule => {
+                // In Wix, import the modules
+                Promise.all([
+                    import('wix-data'),
+                    import('wix-crm')
+                ]).then(([wixDataModule, wixCrmModule]) => {
                     window.wixData = wixDataModule.default;
+                    window.wixCrm = wixCrmModule.default;
                     wixDataAvailable = true;
-                    console.log('✅ Wix Data API imported successfully');
+                    wixCrmAvailable = true;
+                    console.log('✅ Wix Data and CRM APIs imported successfully');
                 }).catch(error => {
-                    console.log('⚠️ Wix Data API not available - running in test mode');
+                    console.log('⚠️ Wix APIs not available - running in test mode');
                     wixDataAvailable = false;
+                    wixCrmAvailable = false;
                 });
             }
         } catch (error) {
-            console.log('⚠️ Wix Data API not available - running in test mode');
+            console.log('⚠️ Wix APIs not available - running in test mode');
             wixDataAvailable = false;
+            wixCrmAvailable = false;
         }
 
         // Configuration data
@@ -1018,7 +1026,7 @@
                 heatPump: heatPumpSelect ? heatPumpSelect.value : 'none'
             };
 
-            // Calculate final price for the form
+            // Calculate final price for the form (ensure we get the right value)
             let total = 0;
             if (config.cabin && cabinData[config.cabin]) {
                 total += cabinData[config.cabin].price;
@@ -1047,6 +1055,12 @@
             
             const gst = Math.round(total * 0.15);
             const totalIncGST = total + gst;
+            
+            console.log('💰 Form pricing calculation:', {
+                subtotal: total,
+                gst: gst,
+                totalIncGST: totalIncGST
+            });
 
             // Create and show the contact form modal
             const modal = document.createElement('div');
@@ -1189,8 +1203,10 @@
 
         function submitEstimateRequest() {
             // Prevent any default behaviors or event bubbling
-            event.preventDefault();
-            event.stopPropagation();
+            if (typeof event !== 'undefined') {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             
             console.log('🚀 Starting estimate submission process...');
             
@@ -1200,7 +1216,20 @@
             const phone = document.getElementById('customerPhone').value.trim();
             const message = document.getElementById('customerMessage').value.trim();
             const configData = JSON.parse(document.getElementById('configData').value);
-            const totalPrice = document.getElementById('totalPrice').value;
+            const totalPriceStr = document.getElementById('totalPrice').value;
+            
+            // Fix the price calculation - get it from the display instead if needed
+            let totalPrice = parseInt(totalPriceStr);
+            if (isNaN(totalPrice)) {
+                // Fallback: get price from the display element
+                const priceElement = document.getElementById('totalPrice');
+                if (priceElement && priceElement.textContent) {
+                    const priceText = priceElement.textContent.replace(/[,$]/g, '');
+                    totalPrice = parseInt(priceText) || 0;
+                }
+            }
+
+            console.log('💰 Calculated total price:', totalPrice);
 
             // Validate required fields
             if (!name || !email) {
@@ -1238,7 +1267,7 @@
                 cedarQuantity: parseInt(configData.cedarQuantity) || 0,
                 trailerOption: configData.trailer,
                 heatPumpOption: configData.heatPump,
-                totalPrice: parseInt(totalPrice),
+                totalPrice: totalPrice,
                 submittedDate: new Date(),
                 status: 'new'
             };
@@ -1270,6 +1299,44 @@
                 alert('We apologize, but there was an issue submitting your request. Please try again in a moment, or contact us directly at info@freedomcabinsnz.com');
             }
 
+            // Function to send business notification email
+            function sendBusinessNotification(estimateData, submissionId) {
+                if (typeof wixCrm !== 'undefined' && wixCrm.emailContact) {
+                    // Use Wix CRM to send email notification
+                    const emailContent = {
+                        to: ['info@freedomcabinsnz.com'],
+                        subject: `New Cabin Estimate Request - ${estimateData.cabinModel}`,
+                        body: `
+                            New cabin estimate request received:
+                            
+                            Customer Details:
+                            - Name: ${estimateData.customerName}
+                            - Email: ${estimateData.customerEmail}
+                            - Phone: ${estimateData.customerPhone}
+                            
+                            Configuration:
+                            - Cabin: ${estimateData.cabinModel}
+                            - Build Type: ${estimateData.buildType}
+                            - Bathroom: ${estimateData.bathroomPackage}
+                            - Kitchen: ${estimateData.kitchenPackage}
+                            - Doors: ${estimateData.doorType} (${estimateData.doorQuantity}x)
+                            - Cedar Panels: ${estimateData.cedarQuantity}x
+                            - Trailer: ${estimateData.trailerOption}
+                            - Heat Pump: ${estimateData.heatPumpOption}
+                            
+                            Total Estimate: ${estimateData.totalPrice.toLocaleString()} inc GST
+                            Reference: ${submissionId}
+                            
+                            Message: ${estimateData.customerMessage}
+                        `
+                    };
+                    
+                    wixCrm.emailContact(emailContent)
+                        .then(() => console.log('📧 Business notification email sent'))
+                        .catch(err => console.error('📧 Email notification failed:', err));
+                }
+            }
+
             // Try Wix database submission
             if (typeof wixData !== 'undefined' && wixData && wixData.insert) {
                 console.log('💾 Attempting Wix database save...');
@@ -1277,6 +1344,10 @@
                 wixData.insert("CabinEstimates", estimateData)
                     .then((result) => {
                         console.log('✅ Wix database save successful:', result);
+                        
+                        // Send business notification email
+                        sendBusinessNotification(estimateData, result._id);
+                        
                         handleSuccess(result._id);
                     })
                     .catch((error) => {
