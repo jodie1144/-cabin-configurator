@@ -683,29 +683,43 @@
         };
 
         function selectCabin(cabinId) {
+            console.log('Selecting cabin:', cabinId);
+            
             // Remove previous selection
             document.querySelectorAll('.cabin-card').forEach(card => {
                 card.classList.remove('selected');
             });
             
             // Add selection to clicked cabin
-            document.querySelector(`[data-cabin="${cabinId}"]`).classList.add('selected');
-            
-            config.cabin = cabinId;
-            updatePricing();
+            const selectedCard = document.querySelector(`[data-cabin="${cabinId}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                config.cabin = cabinId;
+                console.log('Config updated:', config);
+                updatePricing();
+            } else {
+                console.error('Cabin card not found:', cabinId);
+            }
         }
 
         function selectBuildType(buildType) {
+            console.log('Selecting build type:', buildType);
+            
             // Remove previous selection
             document.querySelectorAll('.build-option').forEach(option => {
                 option.classList.remove('selected');
             });
             
             // Add selection to clicked build type
-            document.querySelector(`[data-build="${buildType}"]`).classList.add('selected');
-            
-            config.buildType = buildType;
-            updatePricing();
+            const selectedOption = document.querySelector(`[data-build="${buildType}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+                config.buildType = buildType;
+                console.log('Config updated:', config);
+                updatePricing();
+            } else {
+                console.error('Build option not found:', buildType);
+            }
         }
 
         function changeDoorQuantity(change) {
