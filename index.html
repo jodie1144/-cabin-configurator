@@ -391,19 +391,6 @@
             transform: none;
         }
         
-        .test-results {
-            background: #DA8A67;
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        
-        .test-results.show {
-            display: block;
-        }
-        
         @media (max-width: 1024px) {
             .layout {
                 grid-template-columns: 1fr;
@@ -431,10 +418,6 @@
     </style>
 </head>
 <body>
-    <div class="test-banner">
-        ✅ STANDALONE TEST VERSION - All functionality should work perfectly
-    </div>
-
     <div class="header">
         <div class="header-content">
             <div class="logo">Freedom Cabins NZ</div>
@@ -443,11 +426,6 @@
     </div>
 
     <div class="container">
-        <div id="testResults" class="test-results">
-            <h3>✅ Test Successful!</h3>
-            <p>The configurator is working correctly. You can now use this code in your Wix website.</p>
-        </div>
-
         <div class="layout">
             <div class="main-content">
                 <!-- Step 1: Choose Cabin Model -->
@@ -804,7 +782,6 @@
                 selectedCard.classList.add('selected');
                 config.cabin = cabinId;
                 updatePricing();
-                showTestSuccess();
             }
         }
 
@@ -822,7 +799,6 @@
                 selectedOption.classList.add('selected');
                 config.buildType = buildType;
                 updatePricing();
-                showTestSuccess();
             }
         }
 
@@ -835,7 +811,6 @@
             }
             console.log('✅ Door quantity changed to:', newQuantity);
             updatePricing();
-            showTestSuccess();
         }
 
         function changeCedarQuantity(change) {
@@ -847,7 +822,6 @@
             }
             console.log('✅ Cedar quantity changed to:', newQuantity);
             updatePricing();
-            showTestSuccess();
         }
 
         function updatePricing() {
@@ -861,6 +835,7 @@
                 const cabin = cabinData[config.cabin];
                 total += cabin.price;
                 breakdown.push({ name: cabin.name, price: cabin.price });
+                console.log('💰 Added cabin price:', cabin.price);
             }
 
             // Build type
@@ -869,6 +844,7 @@
                 if (buildType.price > 0) {
                     total += buildType.price;
                     breakdown.push({ name: buildType.name, price: buildType.price });
+                    console.log('💰 Added build type price:', buildType.price);
                 }
             }
 
@@ -877,6 +853,7 @@
             if (bathroomSelect && bathroomSelect.value === 'premium') {
                 total += packages.bathroom.premium;
                 breakdown.push({ name: 'Premium Bathroom Package', price: packages.bathroom.premium });
+                console.log('💰 Added bathroom package:', packages.bathroom.premium);
             }
 
             // Kitchen package
@@ -884,6 +861,7 @@
             if (kitchenSelect && kitchenSelect.value === 'premium') {
                 total += packages.kitchen.premium;
                 breakdown.push({ name: 'Premium Kitchen Package', price: packages.kitchen.premium });
+                console.log('💰 Added kitchen package:', packages.kitchen.premium);
             }
 
             // Door upgrades
@@ -897,6 +875,7 @@
                         name: `Door Upgrades (${config.doorQuantity}x)`, 
                         price: doorTotal 
                     });
+                    console.log('💰 Added door upgrades:', doorTotal);
                 }
             }
 
@@ -908,6 +887,7 @@
                     name: `Cedar Panels (${config.cedarQuantity}x)`, 
                     price: cedarTotal 
                 });
+                console.log('💰 Added cedar panels:', cedarTotal);
             }
 
             // Trailer option
@@ -916,6 +896,7 @@
                 const trailerPrice = trailerPrices[trailerSelect.value];
                 total += trailerPrice;
                 breakdown.push({ name: 'Trailer Option', price: trailerPrice });
+                console.log('💰 Added trailer:', trailerPrice);
             }
 
             // Heat pump
@@ -924,13 +905,25 @@
                 const heatPumpPrice = heatPumpPrices[heatPumpSelect.value];
                 total += heatPumpPrice;
                 breakdown.push({ name: 'Heat Pump', price: heatPumpPrice });
+                console.log('💰 Added heat pump:', heatPumpPrice);
             }
 
             // Add GST
             const gst = Math.round(total * 0.15);
             const totalIncGST = total + gst;
 
-            console.log('✅ Final pricing calculated - Total:', totalIncGST);
+            console.log('💰 Final pricing calculated:', {
+                subtotal: total,
+                gst: gst,
+                totalIncGST: totalIncGST
+            });
+
+            // Store the raw pricing values globally for form access
+            window.currentPricing = {
+                subtotal: total,
+                gst: gst,
+                totalIncGST: totalIncGST
+            };
 
             // Update display
             const totalPriceElement = document.getElementById('totalPrice');
@@ -938,6 +931,7 @@
             
             if (totalPriceElement) {
                 totalPriceElement.textContent = `${totalIncGST.toLocaleString()}`;
+                console.log('💰 Updated price display:', totalPriceElement.textContent);
             }
             if (headerPriceElement) {
                 headerPriceElement.textContent = `Estimate: ${totalIncGST.toLocaleString()} inc GST`;
@@ -1026,42 +1020,11 @@
                 heatPump: heatPumpSelect ? heatPumpSelect.value : 'none'
             };
 
-            // Calculate final price for the form (ensure we get the right value)
-            let total = 0;
-            if (config.cabin && cabinData[config.cabin]) {
-                total += cabinData[config.cabin].price;
-            }
-            if (config.buildType && buildTypes[config.buildType]) {
-                total += buildTypes[config.buildType].price;
-            }
-            if (bathroomSelect && bathroomSelect.value === 'premium') {
-                total += packages.bathroom.premium;
-            }
-            if (kitchenSelect && kitchenSelect.value === 'premium') {
-                total += packages.kitchen.premium;
-            }
-            if (doorSelect && config.doorQuantity > 0) {
-                total += (doorPrices[doorSelect.value] || 0) * config.doorQuantity;
-            }
-            if (config.cedarQuantity > 0) {
-                total += 600 * config.cedarQuantity;
-            }
-            if (trailerSelect && trailerPrices[trailerSelect.value] > 0) {
-                total += trailerPrices[trailerSelect.value];
-            }
-            if (heatPumpSelect && heatPumpPrices[heatPumpSelect.value] > 0) {
-                total += heatPumpPrices[heatPumpSelect.value];
-            }
+            // Use the globally stored pricing data
+            const pricing = window.currentPricing || { subtotal: 0, gst: 0, totalIncGST: 0 };
             
-            const gst = Math.round(total * 0.15);
-            const totalIncGST = total + gst;
+            console.log('💰 Using pricing data for form:', pricing);
             
-            console.log('💰 Form pricing calculation:', {
-                subtotal: total,
-                gst: gst,
-                totalIncGST: totalIncGST
-            });
-
             // Create and show the contact form modal
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -1097,7 +1060,7 @@
                         <p><strong>${configSummary.cabin}</strong></p>
                         <p>${configSummary.buildType}</p>
                         <p style="font-size: 1.2rem; font-weight: bold; color: #DA8A67; margin-top: 0.5rem;">
-                            Total: ${totalIncGST.toLocaleString()} inc GST
+                            Total: ${pricing.totalIncGST.toLocaleString()} inc GST
                         </p>
                     </div>
 
@@ -1132,9 +1095,9 @@
                         "></textarea>
 
                         <input type="hidden" id="configData" value='${JSON.stringify(configSummary)}'>
-                        <input type="hidden" id="totalPriceValue" value="${totalIncGST}">
-                        <input type="hidden" id="subtotalValue" value="${total}">
-                        <input type="hidden" id="gstValue" value="${gst}">
+                        <input type="hidden" id="totalPriceValue" value="${pricing.totalIncGST}">
+                        <input type="hidden" id="subtotalValue" value="${pricing.subtotal}">
+                        <input type="hidden" id="gstValue" value="${pricing.gst}">
                         
                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                             <button type="button" onclick="closeContactForm(); return false;" style="
@@ -1458,13 +1421,6 @@
             const modal = document.querySelector('div[style*="z-index: 1001"]');
             if (modal) {
                 modal.remove();
-            }
-        }
-
-        function showTestSuccess() {
-            const testResults = document.getElementById('testResults');
-            if (testResults) {
-                testResults.classList.add('show');
             }
         }
 
