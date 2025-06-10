@@ -657,6 +657,60 @@
     </div>
 
     <script>
+        // DEBUG: Override alert to catch email-related messages
+        (function() {
+            const originalAlert = window.alert;
+            window.alert = function(message) {
+                console.log('🔍 Alert triggered:', message);
+                
+                // Check if this is the problematic email alert
+                if (message && typeof message === 'string' && 
+                    (message.includes('email client should open') || 
+                     message.includes('Estimate request prepared'))) {
+                    console.error('🚫 BLOCKED EMAIL ALERT:', message);
+                    console.trace('Alert call stack:');
+                    return; // Block the email alert
+                }
+                
+                // Allow other alerts
+                return originalAlert.call(this, message);
+            };
+            console.log('🔍 Alert monitoring enabled');
+        })();
+
+        // GLOBAL PROTECTION: Prevent any mailto: links or email client triggers
+        (function() {
+            const originalWindowLocation = window.location.href;
+            const originalOpen = window.open;
+            
+            // Override window.location.href setter to prevent mailto: links
+            Object.defineProperty(window.location, 'href', {
+                set: function(value) {
+                    if (typeof value === 'string' && value.toLowerCase().startsWith('mailto:')) {
+                        console.warn('🚫 Blocked mailto: attempt:', value);
+                        console.log('✅ Email functionality has been disabled - using database submission instead');
+                        return; // Block the email client trigger
+                    }
+                    // Allow normal navigation
+                    return originalWindowLocation;
+                },
+                get: function() {
+                    return originalWindowLocation;
+                }
+            });
+            
+            // Also block any direct assignments
+            window.open = function(url) {
+                if (typeof url === 'string' && url.toLowerCase().startsWith('mailto:')) {
+                    console.warn('🚫 Blocked window.open mailto: attempt:', url);
+                    return null;
+                }
+                return originalOpen.apply(this, arguments);
+            };
+            
+            console.log('🛡️ Email protection enabled - all mailto: links will be blocked');
+        })();
+
         // Check if we're in Wix environment and import Wix Data API
         let wixDataAvailable = false;
         
@@ -1067,7 +1121,7 @@
                         <input type="hidden" id="totalPrice" value="${totalIncGST}">
                         
                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                            <button type="button" onclick="closeContactForm()" style="
+                            <button type="button" onclick="closeContactForm(); return false;" style="
                                 flex: 1;
                                 padding: 1rem;
                                 border: 2px solid #DA8A67;
@@ -1096,10 +1150,31 @@
             document.body.appendChild(modal);
 
             // Handle form submission
-            document.getElementById('estimateForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                submitEstimateRequest();
-            });
+            const estimateForm = document.getElementById('estimateForm');
+            if (estimateForm) {
+                // Remove any existing event listeners
+                estimateForm.onsubmit = null;
+                
+                // Add new event listener with proper prevention
+                estimateForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    
+                    console.log('📝 Form submission intercepted - calling submitEstimateRequest()');
+                    submitEstimateRequest();
+                    
+                    return false;
+                }, { capture: true });
+                
+                // Also prevent any other form submission methods
+                estimateForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    submitEstimateRequest();
+                    return false;
+                };
+            }
 
             // Focus on name field
             document.getElementById('customerName').focus();
@@ -1113,32 +1188,54 @@
         }
 
         function submitEstimateRequest() {
-            const name = document.getElementById('customerName').value;
-            const email = document.getElementById('customerEmail').value;
-            const phone = document.getElementById('customerPhone').value;
-            const message = document.getElementById('customerMessage').value;
+            // Prevent any default behaviors or event bubbling
+            event.preventDefault();
+            event.stopPropagation();
+            
+            console.log('🚀 Starting estimate submission process...');
+            
+            // Get form data
+            const name = document.getElementById('customerName').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const message = document.getElementById('customerMessage').value.trim();
             const configData = JSON.parse(document.getElementById('configData').value);
             const totalPrice = document.getElementById('totalPrice').value;
 
             // Validate required fields
             if (!name || !email) {
                 alert('Please fill in all required fields (Name and Email).');
-                return;
+                return false;
             }
 
-            // Prepare data for Wix database
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = document.querySelector('#estimateForm button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+                submitBtn.style.background = '#94a3b8';
+            }
+
+            // Prepare data object
             const estimateData = {
                 customerName: name,
                 customerEmail: email,
-                customerPhone: phone || '',
-                customerMessage: message || '',
+                customerPhone: phone,
+                customerMessage: message,
                 cabinModel: configData.cabin,
                 buildType: configData.buildType,
                 bathroomPackage: configData.bathroom,
                 kitchenPackage: configData.kitchen,
                 doorType: configData.doorType,
-                doorQuantity: configData.doorQuantity,
-                cedarQuantity: configData.cedarQuantity,
+                doorQuantity: parseInt(configData.doorQuantity) || 0,
+                cedarQuantity: parseInt(configData.cedarQuantity) || 0,
                 trailerOption: configData.trailer,
                 heatPumpOption: configData.heatPump,
                 totalPrice: parseInt(totalPrice),
@@ -1146,42 +1243,57 @@
                 status: 'new'
             };
 
-            // Show loading state
-            const submitBtn = document.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Submitting...';
-            submitBtn.disabled = true;
+            console.log('📋 Estimate data prepared:', estimateData);
 
-            // Check if Wix Data is available
-            if (wixDataAvailable && typeof wixData !== 'undefined') {
-                // Save to Wix database
+            // Function to reset button state
+            function resetButton() {
+                if (submitBtn) {
+                    submitBtn.textContent = 'Send Estimate Request';
+                    submitBtn.disabled = false;
+                    submitBtn.style.background = 'linear-gradient(135deg, #DA8A67 0%, #c77a57 100%)';
+                }
+            }
+
+            // Function to handle successful submission
+            function handleSuccess(submissionId) {
+                console.log('✅ Submission successful with ID:', submissionId);
+                closeContactForm();
+                setTimeout(() => {
+                    showSuccessMessage(estimateData, submissionId);
+                }, 300);
+            }
+
+            // Function to handle errors
+            function handleError(error) {
+                console.error('❌ Submission error:', error);
+                resetButton();
+                alert('We apologize, but there was an issue submitting your request. Please try again in a moment, or contact us directly at info@freedomcabinsnz.com');
+            }
+
+            // Try Wix database submission
+            if (typeof wixData !== 'undefined' && wixData && wixData.insert) {
+                console.log('💾 Attempting Wix database save...');
+                
                 wixData.insert("CabinEstimates", estimateData)
                     .then((result) => {
-                        console.log('✅ Estimate saved to Wix database:', result);
-                        showSuccessMessage(estimateData, result._id);
-                        closeContactForm();
+                        console.log('✅ Wix database save successful:', result);
+                        handleSuccess(result._id);
                     })
                     .catch((error) => {
-                        console.error('❌ Error saving to Wix database:', error);
-                        // Reset button state
-                        submitBtn.textContent = originalText;
-                        submitBtn.disabled = false;
-                        
-                        // Show error message with contact info
-                        alert('Sorry, there was an error submitting your request. Please contact us directly at info@freedomcabinsnz.com or call us to discuss your cabin requirements.');
+                        console.error('❌ Wix database error:', error);
+                        handleError(error);
                     });
             } else {
-                // Wix not available - show test success message
-                console.log('⚠️ Wix Data not available - showing test success');
-                
-                // Simulate successful submission for testing
+                // Fallback for testing environment
+                console.log('⚠️ Wix Data not available - using test mode');
                 setTimeout(() => {
-                    const testId = 'TEST-' + Date.now();
-                    console.log('✅ Test submission successful with ID:', testId);
-                    showSuccessMessage(estimateData, testId);
-                    closeContactForm();
-                }, 1000);
+                    const testId = 'TEST-' + Date.now().toString().slice(-6);
+                    handleSuccess(testId);
+                }, 1500);
             }
+
+            // Prevent any form submission or page reload
+            return false;
         }
 
         function showSuccessMessage(estimateData, estimateId) {
@@ -1286,6 +1398,27 @@
         // Initialize the configurator
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Configurator initialized successfully');
+            
+            // CLEANUP: Remove any potential legacy email handlers
+            setTimeout(() => {
+                // Find and clean up any potential problematic handlers
+                const allButtons = document.querySelectorAll('button');
+                allButtons.forEach(button => {
+                    // Don't clean our specific form submission button
+                    if (button.type === 'submit' && button.closest('#estimateForm')) {
+                        return; // Skip our form submit button
+                    }
+                    
+                    // Check for any onclick handlers that might trigger email
+                    const onclickStr = button.getAttribute('onclick');
+                    if (onclickStr && onclickStr.includes('submitEstimateRequest')) {
+                        console.log('🧹 Cleaning up potential legacy handler on button:', button);
+                        button.removeAttribute('onclick');
+                    }
+                });
+                
+                console.log('🧹 Legacy handler cleanup completed');
+            }, 100);
             
             // Set initial quantities
             const doorQuantityElement = document.getElementById('doorQuantity');
