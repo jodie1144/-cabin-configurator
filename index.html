@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freedom Cabins NZ - Configurator Test</title>
+    <title>Freedom Cabins NZ - Cabin Configurator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { 
@@ -19,22 +19,14 @@
             line-height: 1.6;
         }
         
-        .test-banner {
-            background: #DA8A67;
-            color: white;
-            text-align: center;
-            padding: 0.5rem;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        
         .header {
             background: linear-gradient(135deg, #DA8A67 0%, #c77a57 100%);
             color: white;
             padding: 1.5rem 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
         
         .header-content {
@@ -635,92 +627,6 @@
     </div>
 
     <script>
-        // DEBUG: Override alert to catch email-related messages
-        (function() {
-            const originalAlert = window.alert;
-            window.alert = function(message) {
-                console.log('🔍 Alert triggered:', message);
-                
-                // Check if this is the problematic email alert
-                if (message && typeof message === 'string' && 
-                    (message.includes('email client should open') || 
-                     message.includes('Estimate request prepared'))) {
-                    console.error('🚫 BLOCKED EMAIL ALERT:', message);
-                    console.trace('Alert call stack:');
-                    return; // Block the email alert
-                }
-                
-                // Allow other alerts
-                return originalAlert.call(this, message);
-            };
-            console.log('🔍 Alert monitoring enabled');
-        })();
-
-        // GLOBAL PROTECTION: Prevent any mailto: links or email client triggers
-        (function() {
-            const originalWindowLocation = window.location.href;
-            const originalOpen = window.open;
-            
-            // Override window.location.href setter to prevent mailto: links
-            Object.defineProperty(window.location, 'href', {
-                set: function(value) {
-                    if (typeof value === 'string' && value.toLowerCase().startsWith('mailto:')) {
-                        console.warn('🚫 Blocked mailto: attempt:', value);
-                        console.log('✅ Email functionality has been disabled - using database submission instead');
-                        return; // Block the email client trigger
-                    }
-                    // Allow normal navigation
-                    return originalWindowLocation;
-                },
-                get: function() {
-                    return originalWindowLocation;
-                }
-            });
-            
-            // Also block any direct assignments
-            window.open = function(url) {
-                if (typeof url === 'string' && url.toLowerCase().startsWith('mailto:')) {
-                    console.warn('🚫 Blocked window.open mailto: attempt:', url);
-                    return null;
-                }
-                return originalOpen.apply(this, arguments);
-            };
-            
-            console.log('🛡️ Email protection enabled - all mailto: links will be blocked');
-        })();
-
-        // Check if we're in Wix environment and import Wix modules
-        let wixDataAvailable = false;
-        let wixCrmAvailable = false;
-        
-        // Try to import Wix Data and CRM - this will only work in Wix environment
-        try {
-            if (typeof wixData !== 'undefined') {
-                wixDataAvailable = true;
-                console.log('✅ Wix Data API available');
-            } else {
-                // In Wix, import the modules
-                Promise.all([
-                    import('wix-data'),
-                    import('wix-crm')
-                ]).then(([wixDataModule, wixCrmModule]) => {
-                    window.wixData = wixDataModule.default;
-                    window.wixCrm = wixCrmModule.default;
-                    wixDataAvailable = true;
-                    wixCrmAvailable = true;
-                    console.log('✅ Wix Data and CRM APIs imported successfully');
-                }).catch(error => {
-                    console.log('⚠️ Wix APIs not available - running in test mode');
-                    wixDataAvailable = false;
-                    wixCrmAvailable = false;
-                });
-            }
-        } catch (error) {
-            console.log('⚠️ Wix APIs not available - running in test mode');
-            wixDataAvailable = false;
-            wixCrmAvailable = false;
-        }
-
         // Configuration data
         const cabinData = {
             '12x4-two-bedroom': { name: '12m x 4m Two Bedroom', price: 125900 },
@@ -769,8 +675,6 @@
         };
 
         function selectCabin(cabinId) {
-            console.log('✅ Cabin selection working:', cabinId);
-            
             // Remove previous selection
             document.querySelectorAll('.cabin-card').forEach(card => {
                 card.classList.remove('selected');
@@ -786,8 +690,6 @@
         }
 
         function selectBuildType(buildType) {
-            console.log('✅ Build type selection working:', buildType);
-            
             // Remove previous selection
             document.querySelectorAll('.build-option').forEach(option => {
                 option.classList.remove('selected');
@@ -809,7 +711,6 @@
             if (quantityDisplay) {
                 quantityDisplay.textContent = newQuantity;
             }
-            console.log('✅ Door quantity changed to:', newQuantity);
             updatePricing();
         }
 
@@ -820,13 +721,10 @@
             if (quantityDisplay) {
                 quantityDisplay.textContent = newQuantity;
             }
-            console.log('✅ Cedar quantity changed to:', newQuantity);
             updatePricing();
         }
 
         function updatePricing() {
-            console.log('✅ Pricing update working with config:', config);
-            
             let total = 0;
             const breakdown = [];
 
@@ -835,7 +733,6 @@
                 const cabin = cabinData[config.cabin];
                 total += cabin.price;
                 breakdown.push({ name: cabin.name, price: cabin.price });
-                console.log('💰 Added cabin price:', cabin.price);
             }
 
             // Build type
@@ -844,7 +741,6 @@
                 if (buildType.price > 0) {
                     total += buildType.price;
                     breakdown.push({ name: buildType.name, price: buildType.price });
-                    console.log('💰 Added build type price:', buildType.price);
                 }
             }
 
@@ -853,7 +749,6 @@
             if (bathroomSelect && bathroomSelect.value === 'premium') {
                 total += packages.bathroom.premium;
                 breakdown.push({ name: 'Premium Bathroom Package', price: packages.bathroom.premium });
-                console.log('💰 Added bathroom package:', packages.bathroom.premium);
             }
 
             // Kitchen package
@@ -861,7 +756,6 @@
             if (kitchenSelect && kitchenSelect.value === 'premium') {
                 total += packages.kitchen.premium;
                 breakdown.push({ name: 'Premium Kitchen Package', price: packages.kitchen.premium });
-                console.log('💰 Added kitchen package:', packages.kitchen.premium);
             }
 
             // Door upgrades
@@ -875,7 +769,6 @@
                         name: `Door Upgrades (${config.doorQuantity}x)`, 
                         price: doorTotal 
                     });
-                    console.log('💰 Added door upgrades:', doorTotal);
                 }
             }
 
@@ -887,7 +780,6 @@
                     name: `Cedar Panels (${config.cedarQuantity}x)`, 
                     price: cedarTotal 
                 });
-                console.log('💰 Added cedar panels:', cedarTotal);
             }
 
             // Trailer option
@@ -896,7 +788,6 @@
                 const trailerPrice = trailerPrices[trailerSelect.value];
                 total += trailerPrice;
                 breakdown.push({ name: 'Trailer Option', price: trailerPrice });
-                console.log('💰 Added trailer:', trailerPrice);
             }
 
             // Heat pump
@@ -905,18 +796,11 @@
                 const heatPumpPrice = heatPumpPrices[heatPumpSelect.value];
                 total += heatPumpPrice;
                 breakdown.push({ name: 'Heat Pump', price: heatPumpPrice });
-                console.log('💰 Added heat pump:', heatPumpPrice);
             }
 
             // Add GST
             const gst = Math.round(total * 0.15);
             const totalIncGST = total + gst;
-
-            console.log('💰 Final pricing calculated:', {
-                subtotal: total,
-                gst: gst,
-                totalIncGST: totalIncGST
-            });
 
             // Store the raw pricing values globally for form access
             window.currentPricing = {
@@ -930,11 +814,10 @@
             const headerPriceElement = document.getElementById('headerPrice');
             
             if (totalPriceElement) {
-                totalPriceElement.textContent = `${totalIncGST.toLocaleString()}`;
-                console.log('💰 Updated price display:', totalPriceElement.textContent);
+                totalPriceElement.textContent = `$${totalIncGST.toLocaleString()}`;
             }
             if (headerPriceElement) {
-                headerPriceElement.textContent = `Estimate: ${totalIncGST.toLocaleString()} inc GST`;
+                headerPriceElement.textContent = `Estimate: $${totalIncGST.toLocaleString()} inc GST`;
             }
 
             // Update breakdown
@@ -943,7 +826,7 @@
                 breakdownHTML = breakdown.map(item => `
                     <div class="price-item">
                         <span>${item.name}</span>
-                        <span>${item.price.toLocaleString()}</span>
+                        <span>$${item.price.toLocaleString()}</span>
                     </div>
                 `).join('');
                 
@@ -951,15 +834,15 @@
                     breakdownHTML += `
                         <div class="price-item">
                             <span>Subtotal</span>
-                            <span>${total.toLocaleString()}</span>
+                            <span>$${total.toLocaleString()}</span>
                         </div>
                         <div class="price-item">
                             <span>GST (15%)</span>
-                            <span>${gst.toLocaleString()}</span>
+                            <span>$${gst.toLocaleString()}</span>
                         </div>
                         <div class="price-item">
                             <span>Total inc GST</span>
-                            <span>${totalIncGST.toLocaleString()}</span>
+                            <span>$${totalIncGST.toLocaleString()}</span>
                         </div>
                     `;
                 }
@@ -996,7 +879,7 @@
                 return;
             }
 
-            // Show contact form instead of just alert
+            // Show contact form
             showContactForm();
         }
 
@@ -1022,8 +905,6 @@
 
             // Use the globally stored pricing data
             const pricing = window.currentPricing || { subtotal: 0, gst: 0, totalIncGST: 0 };
-            
-            console.log('💰 Using pricing data for form:', pricing);
             
             // Create and show the contact form modal
             const modal = document.createElement('div');
@@ -1060,7 +941,7 @@
                         <p><strong>${configSummary.cabin}</strong></p>
                         <p>${configSummary.buildType}</p>
                         <p style="font-size: 1.2rem; font-weight: bold; color: #DA8A67; margin-top: 0.5rem;">
-                            Total: ${pricing.totalIncGST.toLocaleString()} inc GST
+                            Total: $${pricing.totalIncGST.toLocaleString()} inc GST
                         </p>
                     </div>
 
@@ -1096,11 +977,9 @@
 
                         <input type="hidden" id="configData" value='${JSON.stringify(configSummary)}'>
                         <input type="hidden" id="totalPriceValue" value="${pricing.totalIncGST}">
-                        <input type="hidden" id="subtotalValue" value="${pricing.subtotal}">
-                        <input type="hidden" id="gstValue" value="${pricing.gst}">
                         
                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                            <button type="button" onclick="closeContactForm(); return false;" style="
+                            <button type="button" onclick="closeContactForm()" style="
                                 flex: 1;
                                 padding: 1rem;
                                 border: 2px solid #DA8A67;
@@ -1131,28 +1010,10 @@
             // Handle form submission
             const estimateForm = document.getElementById('estimateForm');
             if (estimateForm) {
-                // Remove any existing event listeners
-                estimateForm.onsubmit = null;
-                
-                // Add new event listener with proper prevention
                 estimateForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    
-                    console.log('📝 Form submission intercepted - calling submitEstimateRequest()');
                     submitEstimateRequest();
-                    
-                    return false;
-                }, { capture: true });
-                
-                // Also prevent any other form submission methods
-                estimateForm.onsubmit = function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    submitEstimateRequest();
-                    return false;
-                };
+                });
             }
 
             // Focus on name field
@@ -1166,47 +1027,26 @@
             }
         }
 
-        function submitEstimateRequest() {
-            // Prevent any default behaviors or event bubbling
-            if (typeof event !== 'undefined') {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            
-            console.log('🚀 Starting estimate submission process...');
-            
+        async function submitEstimateRequest() {
             // Get form data
             const name = document.getElementById('customerName').value.trim();
             const email = document.getElementById('customerEmail').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
             const message = document.getElementById('customerMessage').value.trim();
             const configData = JSON.parse(document.getElementById('configData').value);
-            const totalPriceStr = document.getElementById('totalPrice').value;
-            
-            // Fix the price calculation - get it from the display instead if needed
-            let totalPrice = parseInt(totalPriceStr);
-            if (isNaN(totalPrice)) {
-                // Fallback: get price from the display element
-                const priceElement = document.getElementById('totalPrice');
-                if (priceElement && priceElement.textContent) {
-                    const priceText = priceElement.textContent.replace(/[,$]/g, '');
-                    totalPrice = parseInt(priceText) || 0;
-                }
-            }
-
-            console.log('💰 Calculated total price:', totalPrice);
+            const totalPrice = parseInt(document.getElementById('totalPriceValue').value);
 
             // Validate required fields
             if (!name || !email) {
                 alert('Please fill in all required fields (Name and Email).');
-                return false;
+                return;
             }
 
             // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 alert('Please enter a valid email address.');
-                return false;
+                return;
             }
 
             // Show loading state
@@ -1214,126 +1054,60 @@
             if (submitBtn) {
                 submitBtn.textContent = 'Submitting...';
                 submitBtn.disabled = true;
-                submitBtn.style.background = '#94a3b8';
             }
 
             // Prepare data object
             const estimateData = {
                 customerName: name,
                 customerEmail: email,
-                customerPhone: phone,
-                customerMessage: message,
+                customerPhone: phone || '',
+                customerMessage: message || '',
                 cabinModel: configData.cabin,
                 buildType: configData.buildType,
                 bathroomPackage: configData.bathroom,
                 kitchenPackage: configData.kitchen,
                 doorType: configData.doorType,
-                doorQuantity: parseInt(configData.doorQuantity) || 0,
-                cedarQuantity: parseInt(configData.cedarQuantity) || 0,
+                doorQuantity: configData.doorQuantity,
+                cedarQuantity: configData.cedarQuantity,
                 trailerOption: configData.trailer,
                 heatPumpOption: configData.heatPump,
                 totalPrice: totalPrice,
-                submittedDate: new Date(),
+                submittedDate: new Date().toISOString(),
                 status: 'new'
             };
 
-            console.log('📋 Estimate data prepared:', estimateData);
-
-            // Function to reset button state
-            function resetButton() {
+            try {
+                // Check if we're in Wix environment
+                if (typeof wixData !== 'undefined') {
+                    // Save to Wix database
+                    const result = await wixData.insert("CabinEstimates", estimateData);
+                    
+                    // Call backend function to send email
+                    const backend = await import('backend/email.jsw');
+                    await backend.sendEstimateEmail(estimateData);
+                    
+                    handleSuccess(result._id);
+                } else {
+                    // For testing outside Wix
+                    console.log('Estimate data:', estimateData);
+                    setTimeout(() => {
+                        handleSuccess('TEST-' + Date.now());
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('There was an error submitting your request. Please try again or contact us directly.');
                 if (submitBtn) {
                     submitBtn.textContent = 'Send Estimate Request';
                     submitBtn.disabled = false;
-                    submitBtn.style.background = 'linear-gradient(135deg, #DA8A67 0%, #c77a57 100%)';
                 }
             }
-
-            // Function to handle successful submission
-            function handleSuccess(submissionId) {
-                console.log('✅ Submission successful with ID:', submissionId);
-                closeContactForm();
-                setTimeout(() => {
-                    showSuccessMessage(estimateData, submissionId);
-                }, 300);
-            }
-
-            // Function to handle errors
-            function handleError(error) {
-                console.error('❌ Submission error:', error);
-                resetButton();
-                alert('We apologize, but there was an issue submitting your request. Please try again in a moment, or contact us directly at info@freedomcabinsnz.com');
-            }
-
-            // Function to send business notification email
-            function sendBusinessNotification(estimateData, submissionId) {
-                if (typeof wixCrm !== 'undefined' && wixCrm.emailContact) {
-                    // Use Wix CRM to send email notification
-                    const emailContent = {
-                        to: ['info@freedomcabinsnz.com'],
-                        subject: `New Cabin Estimate Request - ${estimateData.cabinModel}`,
-                        body: `
-                            New cabin estimate request received:
-                            
-                            Customer Details:
-                            - Name: ${estimateData.customerName}
-                            - Email: ${estimateData.customerEmail}
-                            - Phone: ${estimateData.customerPhone}
-                            
-                            Configuration:
-                            - Cabin: ${estimateData.cabinModel}
-                            - Build Type: ${estimateData.buildType}
-                            - Bathroom: ${estimateData.bathroomPackage}
-                            - Kitchen: ${estimateData.kitchenPackage}
-                            - Doors: ${estimateData.doorType} (${estimateData.doorQuantity}x)
-                            - Cedar Panels: ${estimateData.cedarQuantity}x
-                            - Trailer: ${estimateData.trailerOption}
-                            - Heat Pump: ${estimateData.heatPumpOption}
-                            
-                            Total Estimate: ${estimateData.totalPrice.toLocaleString()} inc GST
-                            Reference: ${submissionId}
-                            
-                            Message: ${estimateData.customerMessage}
-                        `
-                    };
-                    
-                    wixCrm.emailContact(emailContent)
-                        .then(() => console.log('📧 Business notification email sent'))
-                        .catch(err => console.error('📧 Email notification failed:', err));
-                }
-            }
-
-            // Try Wix database submission
-            if (typeof wixData !== 'undefined' && wixData && wixData.insert) {
-                console.log('💾 Attempting Wix database save...');
-                
-                wixData.insert("CabinEstimates", estimateData)
-                    .then((result) => {
-                        console.log('✅ Wix database save successful:', result);
-                        
-                        // Send business notification email
-                        sendBusinessNotification(estimateData, result._id);
-                        
-                        handleSuccess(result._id);
-                    })
-                    .catch((error) => {
-                        console.error('❌ Wix database error:', error);
-                        handleError(error);
-                    });
-            } else {
-                // Fallback for testing environment
-                console.log('⚠️ Wix Data not available - using test mode');
-                setTimeout(() => {
-                    const testId = 'TEST-' + Date.now().toString().slice(-6);
-                    handleSuccess(testId);
-                }, 1500);
-            }
-
-            // Prevent any form submission or page reload
-            return false;
         }
 
-        function showSuccessMessage(estimateData, estimateId) {
-            // Create and show success message
+        function handleSuccess(submissionId) {
+            closeContactForm();
+            
+            // Show success message
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -1357,7 +1131,6 @@
                     max-width: 500px;
                     width: 100%;
                     text-align: center;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                 ">
                     <div style="
                         width: 60px;
@@ -1376,29 +1149,12 @@
                         Estimate Request Submitted!
                     </h2>
                     
-                    <p style="color: #64748b; margin-bottom: 1rem; line-height: 1.6;">
-                        Thank you ${estimateData.customerName}! We've received your request for a 
-                        <strong>${estimateData.cabinModel}</strong> cabin.
+                    <p style="color: #64748b; margin-bottom: 1rem;">
+                        Thank you! We've received your request and will contact you within 24 hours with your detailed estimate.
                     </p>
                     
-                    <div style="
-                        background: #fef7f0;
-                        padding: 1rem;
-                        border-radius: 8px;
-                        margin-bottom: 1.5rem;
-                        text-align: left;
-                    ">
-                        <p style="color: #DA8A67; font-weight: 600; margin-bottom: 0.5rem;">
-                            Reference: ${estimateId}
-                        </p>
-                        <p style="color: #64748b; font-size: 0.9rem;">
-                            Estimated Total: $${estimateData.totalPrice.toLocaleString()} inc GST
-                        </p>
-                    </div>
-                    
-                    <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                        We'll contact you within 24 hours with your detailed estimate 
-                        and answer any questions you have.
+                    <p style="color: #DA8A67; font-weight: 600; margin-bottom: 1.5rem;">
+                        Reference: ${submissionId}
                     </p>
                     
                     <button onclick="closeSuccessMessage()" style="
@@ -1409,7 +1165,6 @@
                         border-radius: 6px;
                         font-weight: 600;
                         cursor: pointer;
-                        font-size: 1rem;
                     ">Continue</button>
                 </div>
             `;
@@ -1426,44 +1181,12 @@
 
         // Initialize the configurator
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ Configurator initialized successfully');
-            
-            // CLEANUP: Remove any potential legacy email handlers
-            setTimeout(() => {
-                // Find and clean up any potential problematic handlers
-                const allButtons = document.querySelectorAll('button');
-                allButtons.forEach(button => {
-                    // Don't clean our specific form submission button
-                    if (button.type === 'submit' && button.closest('#estimateForm')) {
-                        return; // Skip our form submit button
-                    }
-                    
-                    // Check for any onclick handlers that might trigger email
-                    const onclickStr = button.getAttribute('onclick');
-                    if (onclickStr && onclickStr.includes('submitEstimateRequest')) {
-                        console.log('🧹 Cleaning up potential legacy handler on button:', button);
-                        button.removeAttribute('onclick');
-                    }
-                });
-                
-                console.log('🧹 Legacy handler cleanup completed');
-            }, 100);
-            
             // Set initial quantities
-            const doorQuantityElement = document.getElementById('doorQuantity');
-            const cedarQuantityElement = document.getElementById('cedarQuantity');
-            
-            if (doorQuantityElement) {
-                doorQuantityElement.textContent = '0';
-            }
-            if (cedarQuantityElement) {
-                cedarQuantityElement.textContent = '0';
-            }
+            document.getElementById('doorQuantity').textContent = '0';
+            document.getElementById('cedarQuantity').textContent = '0';
             
             // Initial pricing update
             updatePricing();
-            
-            console.log('✅ All systems ready - test the configurator now!');
         });
     </script>
 </body>
